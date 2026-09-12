@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
+import { ShieldCheck, ClipboardList, BadgeCheck } from "lucide-react";
 
 export default function HeroBanner() {
   return (
@@ -51,7 +52,7 @@ export default function HeroBanner() {
           <p className="font-heading text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111] mb-3">
             MG Auto · Philippines
           </p>
-          <h1 className="font-display text-7xl sm:text-8xl md:text-[110px] font-black text-white tracking-tight leading-none mb-6 uppercase">
+          <h1 className="font-display text-7xl sm:text-8xl md:text-[110px] text-white leading-none mb-6 uppercase">
             Find Your
             <br />
             <span className="text-[#cc1111]">Next Car.</span>
@@ -77,21 +78,21 @@ export default function HeroBanner() {
           </div>
         </motion.div>
 
-        {/* Stats — visible on desktop, floated above the car image */}
+        {/* Stats — icon + label, right edge with dark backdrop */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.6, duration: 0.7 }}
-          className="absolute bottom-8 right-8 hidden lg:flex gap-10"
+          className="absolute right-10 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-3"
         >
           {[
-            { value: "100%", label: "Inspected" },
-            { value: "Full", label: "History" },
-            { value: "₱0", label: "Hidden Fees" },
+            { icon: <ShieldCheck size={36} strokeWidth={1.5} />, label: "Fully Inspected" },
+            { icon: <ClipboardList size={36} strokeWidth={1.5} />, label: "Full History" },
+            { icon: <BadgeCheck size={36} strokeWidth={1.5} />, label: "Roadworthy Certified" },
           ].map((s) => (
-            <div key={s.label} className="text-right">
-              <p className="font-display text-4xl font-black text-[#cc1111]">{s.value}</p>
-              <p className="font-heading text-[10px] tracking-widest uppercase text-[#555]">{s.label}</p>
+            <div key={s.label} className="flex items-center gap-4 px-5 py-4 bg-black/60 backdrop-blur-sm rounded-xl border border-white/5">
+              <div className="text-[#cc1111] flex-shrink-0">{s.icon}</div>
+              <p className="font-heading text-xs font-semibold tracking-widest uppercase text-white/70">{s.label}</p>
             </div>
           ))}
         </motion.div>

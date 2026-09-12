@@ -21,7 +21,7 @@
   --color-border: var(--border);
   --color-muted: var(--muted);
   --font-sans: var(--font-raleway);
-  --font-display: var(--font-barlow);
+  --font-display: var(--font-bebas);
 }
 
 * {
@@ -39,9 +39,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Display font utility — Barlow Condensed Black */
+/* Display font utility — Bebas Neue */
 .font-display {
-  font-family: var(--font-barlow), Arial, sans-serif;
+  font-family: var(--font-bebas), Arial, sans-serif;
+  letter-spacing: 0.02em;
 }
 
 /* Raleway heading utility */

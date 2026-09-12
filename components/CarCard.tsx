@@ -84,7 +84,7 @@ export default function CarCard({ car }: { car: Car }) {
           <p className="font-heading text-[10px] font-semibold tracking-[0.3em] uppercase text-[#cc1111] mb-0.5">
             {car.brand}
           </p>
-          <h3 className="font-display text-white font-black text-2xl leading-tight group-hover:text-[#cc1111] transition-colors uppercase">
+          <h3 className="font-display text-white text-2xl leading-tight group-hover:text-[#cc1111] transition-colors uppercase">
             {car.model}
           </h3>
           <p className="font-heading text-[#666] text-sm tracking-wide">{car.year} · {car.carType}</p>
@@ -93,9 +93,9 @@ export default function CarCard({ car }: { car: Car }) {
         {/* Price */}
         <div className="mb-4">
           {isSold ? (
-            <p className="font-display text-[#555] font-black text-2xl tracking-wider">SOLD</p>
+            <p className="font-display text-[#555] text-2xl tracking-wider">SOLD</p>
           ) : (
-            <p className="font-display text-[#cc1111] font-black text-2xl tracking-wider">
+            <p className="font-display text-[#cc1111] text-2xl tracking-wider">
               {formatPrice(car.sellingPrice)}
             </p>
           )}

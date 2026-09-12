@@ -137,9 +137,9 @@ export default function CarDetailClient({ car }: { car: Car }) {
             </h2>
             <div className="flex flex-wrap items-center gap-6">
               {car.status === "sold" ? (
-                <span className="font-display text-4xl font-black text-[#555] tracking-wider">SOLD</span>
+                <span className="font-display text-4xl text-[#555] tracking-wider">SOLD</span>
               ) : (
-                <span className="font-display text-4xl font-black text-[#cc1111] tracking-wider">
+                <span className="font-display text-4xl text-[#cc1111] tracking-wider">
                   {formatPrice(car.sellingPrice)}
                 </span>
               )}
