@@ -49,10 +49,7 @@ export default function HeroBanner() {
           transition={{ duration: 0.7 }}
           className="max-w-xl"
         >
-          <p className="font-heading text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111] mb-3">
-            MG Auto · Philippines
-          </p>
-          <h1 className="font-display text-7xl sm:text-8xl md:text-[110px] text-white leading-none mb-6 uppercase">
+<h1 className="font-display text-7xl sm:text-8xl md:text-[110px] text-white leading-none mb-6 uppercase">
             Find Your
             <br />
             <span className="text-[#cc1111]">Next Car.</span>

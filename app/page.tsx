@@ -44,7 +44,7 @@ export default async function HomePage() {
             Available Now
           </p>
           <h2 className="font-heading text-3xl font-bold text-white tracking-[0.2em] uppercase">
-            All Cars For Sale
+            Available Cars For Sale
           </h2>
         </div>
         <CarGrid cars={cars} />
