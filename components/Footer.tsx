@@ -7,11 +7,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-[#cc1111] flex items-center justify-center">
-                <span className="text-white font-black text-sm">MG</span>
-              </div>
-              <span className="text-white font-bold text-lg tracking-widest uppercase">AUTO</span>
+            <div className="mb-4">
+              <span className="font-display text-white text-xl tracking-widest uppercase leading-none">AUTO EXCHANGE</span>
             </div>
             <p className="text-[#666] text-sm leading-relaxed">
               Quality pre-owned vehicles, fully inspected and roadworthy certified.
@@ -25,10 +22,14 @@ export default function Footer() {
               Browse
             </h4>
             <ul className="space-y-2">
-              {["Available Cars", "Sold Cars", "Most Viewed"].map((item) => (
-                <li key={item}>
-                  <Link href="/" className="text-[#666] text-sm hover:text-white transition-colors">
-                    {item}
+              {[
+                { label: "Available Units", href: "/" },
+                { label: "Sold Units", href: "/cars/sold" },
+                { label: "About", href: "/about" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <Link href={item.href} className="text-[#666] text-sm hover:text-white transition-colors">
+                    {item.label}
                   </Link>
                 </li>
               ))}
@@ -49,7 +50,7 @@ export default function Footer() {
 
         <div className="border-t border-[#1f1f1f] mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-[#444] text-xs">
-            © {new Date().getFullYear()} MG Auto. All rights reserved.
+            © {new Date().getFullYear()} Auto Exchange. All rights reserved.
           </p>
           <Link href="/admin" className="text-[#333] text-xs hover:text-[#cc1111] transition-colors">
             Admin Portal

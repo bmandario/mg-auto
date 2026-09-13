@@ -20,11 +20,11 @@ export default async function SoldCarsPage() {
           <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111] mb-2">
             Archive
           </p>
-          <h1 className="text-4xl font-black text-white uppercase tracking-tight">
-            Sold Cars
+          <h1 className="font-display text-5xl text-white uppercase tracking-tight">
+            Sold Units
           </h1>
-          <p className="text-[#555] text-sm mt-3 max-w-md">
-            These vehicles have found their new owners. Browse our available inventory for your next car.
+          <p className="font-heading text-[#555] text-sm mt-3 max-w-md">
+            These units have found their new owners. Browse our available inventory for your next car.
           </p>
         </div>
       </section>

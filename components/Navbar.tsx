@@ -6,9 +6,10 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 
 const links = [
-  { label: "Browse Cars", href: "/" },
-  { label: "Sold Cars", href: "/cars/sold" },
-  { label: "Contact", href: "#inquire" },
+  { label: "Browse Units", href: "/" },
+  { label: "Sold Units", href: "/cars/sold" },
+  { label: "About", href: "/about" },
+  { label: "Contact Us", href: "#inquire" },
 ];
 
 export default function Navbar() {
@@ -31,15 +32,10 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 bg-[#cc1111] flex items-center justify-center">
-              <span className="text-white font-black text-sm">MG</span>
-            </div>
-            <div>
-              <span className="font-heading text-white font-bold text-lg tracking-widest uppercase">
-                AUTO
-              </span>
-            </div>
+          <Link href="/" className="flex items-center group">
+            <span className="font-display text-white text-xl tracking-widest uppercase leading-none">
+              AUTO EXCHANGE
+            </span>
           </Link>
 
           {/* Desktop Nav */}
@@ -57,12 +53,6 @@ export default function Navbar() {
                 {l.label}
               </Link>
             ))}
-            <Link
-              href="/admin"
-              className="text-xs tracking-widest uppercase text-[#555] hover:text-[#cc1111] transition-colors"
-            >
-              Admin
-            </Link>
           </nav>
 
           {/* Mobile toggle */}

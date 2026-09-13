@@ -8,7 +8,7 @@ import { submitInquiry } from "@/lib/inquiries";
 import { motion } from "framer-motion";
 import {
   CheckCircle, XCircle, Clock, Gauge, Fuel, Settings2,
-  Users, Zap, ChevronLeft, ChevronRight, X, Send,
+  Users, Zap, ChevronLeft, ChevronRight, X, Send, Banknote,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,6 +24,34 @@ type InquiryForm = z.infer<typeof inquirySchema>;
 
 function formatPrice(p: number) {
   return "₱ " + p.toLocaleString("en-PH");
+}
+
+function computeFinancing(sellingPrice: number) {
+  const dp = Math.round(sellingPrice * 0.2 / 1000) * 1000;
+  const loanable = sellingPrice - dp;
+  const rate = 0.012;
+  const amort = (months: number) =>
+    Math.round(((loanable + loanable * rate * months) / months) / 500) * 500;
+  return {
+    available: true,
+    estimatedDownPayment: dp,
+    terms: [
+      { months: 12 as const, monthlyAmortization: amort(12) },
+      { months: 24 as const, monthlyAmortization: amort(24) },
+      { months: 36 as const, monthlyAmortization: amort(36) },
+      { months: 48 as const, monthlyAmortization: amort(48) },
+    ],
+    requiredSalary: Math.round((amort(48) * 3) / 1000) * 1000,
+    notes: "Figures are estimates based on 20% down payment and prevailing bank rates. Subject to credit approval.",
+  };
+}
+
+function formatDate(raw?: string) {
+  if (!raw) return "";
+  // Accepts YYYY-MM-DD or already MM/DD/YYYY
+  const [y, m, d] = raw.split("-");
+  if (y && m && d) return `${m}/${d}/${y}`;
+  return raw;
 }
 
 function RoadworthyBadge({ status }: { status: string }) {
@@ -59,7 +87,7 @@ function RoadworthyBadge({ status }: { status: string }) {
 export default function CarDetailClient({ car }: { car: Car }) {
   const [activePhoto, setActivePhoto] = useState(0);
   const [lightbox, setLightbox] = useState(false);
-  const [tab, setTab] = useState<"overview" | "service" | "parts">("overview");
+  const [tab, setTab] = useState<"overview" | "service" | "parts" | "financing">("overview");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -67,6 +95,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
     resolver: zodResolver(inquirySchema),
   });
 
+  const financing = car.financing?.available ? car.financing : computeFinancing(car.sellingPrice);
   const mainPhoto = car.photos?.find((p) => p.isMain) || car.photos?.[0];
   const photos = car.photos || [];
   const activePhotoUrl = photos[activePhoto]?.url || mainPhoto?.url;
@@ -144,6 +173,15 @@ export default function CarDetailClient({ car }: { car: Car }) {
                 </span>
               )}
               <RoadworthyBadge status={car.roadworthiness?.status || "pending"} />
+              {car.financing?.available && (
+                <div className="flex items-center gap-2 bg-blue-400/10 border border-blue-400/30 px-4 py-2">
+                  <Banknote size={16} className="text-blue-400" />
+                  <div>
+                    <p className="text-blue-400 font-bold text-xs tracking-widest uppercase">Easy Financing</p>
+                    <p className="text-blue-400/60 text-[10px]">Ask for details</p>
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
         </div>
@@ -195,9 +233,9 @@ export default function CarDetailClient({ car }: { car: Car }) {
                 viewport={{ once: true }}
                 className="group"
               >
-                <p className="font-display text-4xl sm:text-6xl font-black text-[#cc1111] leading-none">
+                <p className="font-display text-4xl sm:text-6xl text-white leading-none">
                   {s.value}
-                  {s.unit && <span className="text-xl text-[#cc1111]/60 ml-1">{s.unit}</span>}
+                  {s.unit && <span className="text-xl text-white/40 ml-1">{s.unit}</span>}
                 </p>
                 <p className="font-heading text-[10px] font-semibold tracking-widest uppercase text-[#555] mt-2">
                   {s.label}
@@ -253,7 +291,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
               )}
               {car.roadworthiness?.expiryDate && (
                 <p className="text-[#444] text-xs mt-1 tracking-widest">
-                  EXPIRES: {car.roadworthiness.expiryDate}
+                  EXPIRES: {formatDate(car.roadworthiness.expiryDate)}
                 </p>
               )}
             </motion.div>
@@ -313,8 +351,8 @@ export default function CarDetailClient({ car }: { car: Car }) {
       <section className="py-20 border-b border-[#1f1f1f]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Tabs */}
-          <div className="flex gap-0 mb-10 border-b border-[#1f1f1f]">
-            {(["overview", "service", "parts"] as const).map((t) => (
+          <div className="flex gap-0 mb-10 border-b border-[#1f1f1f] flex-wrap">
+            {(["overview", "service", "parts", "financing"] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
@@ -324,7 +362,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
                     : "border-transparent text-[#555] hover:text-[#aaa]"
                 }`}
               >
-                {t === "overview" ? "Overview" : t === "service" ? "Service History" : "Parts Replaced"}
+                {t === "overview" ? "Overview" : t === "service" ? "Service History" : t === "parts" ? "Parts Replaced" : "Financing"}
               </button>
             ))}
           </div>
@@ -359,7 +397,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
                       <div className="bg-[#111] border border-[#1f1f1f] p-5">
                         <div className="flex flex-wrap justify-between gap-2 mb-2">
                           <p className="text-[10px] font-bold tracking-widest uppercase text-[#cc1111]">
-                            {s.date}
+                            {formatDate(s.date)}
                           </p>
                           <p className="text-[10px] text-[#555]">{s.mileage?.toLocaleString("en-PH")} km</p>
                         </div>
@@ -386,7 +424,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-[#1f1f1f]">
-                      {["Part", "Brand", "Date", "Cost"].map((h) => (
+                      {["Part", "Brand", "Date"].map((h) => (
                         <th key={h} className="text-left text-[10px] font-bold tracking-widest uppercase text-[#444] pb-3 pr-4">
                           {h}
                         </th>
@@ -397,16 +435,62 @@ export default function CarDetailClient({ car }: { car: Car }) {
                     {car.partsReplaced.map((p, i) => (
                       <tr key={p.id || i} className="border-b border-[#1a1a1a]">
                         <td className="py-3 pr-4 text-white font-medium">{p.part}</td>
-                        <td className="py-3 pr-4 text-[#666]">{p.brand}</td>
-                        <td className="py-3 pr-4 text-[#666]">{p.date}</td>
-                        <td className="py-3 text-[#cc1111] font-bold">
-                          ₱ {p.cost?.toLocaleString("en-PH")}
-                        </td>
+                        <td className="py-3 pr-4 text-white">{p.brand}</td>
+                        <td className="py-3 text-white">{formatDate(p.date)}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               )}
+            </div>
+          )}
+          {tab === "financing" && (
+            <div className="space-y-8">
+              {/* Summary cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-[#111] border border-[#1f1f1f] p-6">
+                  <p className="text-[10px] font-bold tracking-widest uppercase text-[#cc1111] mb-2">Estimated Down Payment</p>
+                  <p className="font-display text-3xl text-white leading-none">
+                    {formatPrice(financing.estimatedDownPayment)}
+                  </p>
+                </div>
+                <div className="bg-[#111] border border-[#1f1f1f] p-6">
+                  <p className="text-[10px] font-bold tracking-widest uppercase text-[#cc1111] mb-2">Required Monthly Salary</p>
+                  <p className="font-display text-3xl text-white leading-none">
+                    {formatPrice(financing.requiredSalary)}
+                  </p>
+                </div>
+              </div>
+
+              {/* Amortization table */}
+              <div>
+                <p className="text-[10px] font-bold tracking-widest uppercase text-[#555] mb-4">Estimated Monthly Amortization</p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {([12, 24, 36, 48] as const).map((mo) => {
+                    const term = financing.terms.find((t) => t.months === mo);
+                    return (
+                      <div key={mo} className="bg-[#111] border border-[#1f1f1f] p-5 text-center">
+                        <p className="font-display text-4xl text-[#cc1111] leading-none">{mo}</p>
+                        <p className="text-[10px] font-bold tracking-widest uppercase text-[#555] mt-1 mb-3">months</p>
+                        <p className="font-display text-xl text-white leading-none">
+                          {term ? formatPrice(term.monthlyAmortization) : "—"}
+                        </p>
+                        <p className="text-[10px] text-[#444] mt-1">/ month</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {financing.notes && (
+                <p className="text-[#555] text-sm border-l-2 border-[#cc1111]/30 pl-4">
+                  {financing.notes}
+                </p>
+              )}
+
+              <p className="text-[#333] text-xs">
+                * Figures are estimates only. Actual amounts may vary based on lender approval, credit standing, and prevailing interest rates.
+              </p>
             </div>
           )}
         </div>
@@ -426,7 +510,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
             Ask About
           </h3>
           <h3 className="font-display text-5xl sm:text-6xl font-black text-[#cc1111] uppercase tracking-tight mb-8">
-            This Car
+            This Unit
           </h3>
 
           {submitted ? (

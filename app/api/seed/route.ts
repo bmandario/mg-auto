@@ -30,8 +30,8 @@ const DUMMY_CARS = [
     description:
       "One of the most popular SUVs in the Philippines. This Fortuner is in excellent condition with full service history from an authorized dealer. Perfect for family adventures and city driving.",
     status: "available",
-    // Toyota Fortuner — white SUV
-    photos: photos(["1622210642960-0f6a2cdbdc9f","1639280791656-5f8506ff21d2","1649296303096-38245976e01e","1789044488410-839d90ac9061"]),
+    // Toyota Fortuner — actual Fortuner photos
+    photos: photos(["1664783856972-ac9922d7b2d3","1670054953044-2605dbd0d747","1619767886645-0ae16581bf6b","1581862142388-23e1c52ca091"]),
     roadworthiness: { status: "pass", expiryDate: "2025-12-31", notes: "Passed full LTO roadworthiness inspection." },
     serviceHistory: [
       { id: "s1", date: "2024-03-15", service: "Preventive Maintenance Service (PMS)", mileage: 35000, notes: "Oil change, filter replacement, brake check", cost: 4500 },
@@ -41,6 +41,18 @@ const DUMMY_CARS = [
       { id: "p1", part: "Engine Oil Filter", brand: "Toyota Genuine", date: "2024-03-15", cost: 450 },
       { id: "p2", part: "Air Filter", brand: "Toyota Genuine", date: "2024-03-15", cost: 850 },
     ],
+    financing: {
+      available: true,
+      estimatedDownPayment: 290000,
+      terms: [
+        { months: 12, monthlyAmortization: 111000 },
+        { months: 24, monthlyAmortization: 63000 },
+        { months: 36, monthlyAmortization: 46500 },
+        { months: 48, monthlyAmortization: 38500 },
+      ],
+      requiredSalary: 116000,
+      notes: "Figures are estimates based on 20% down payment and prevailing bank rates. Subject to credit approval.",
+    },
     partnerCost: 1100000,
     repairCost: 25000,
     recommendedPrice: 1406250,
@@ -70,8 +82,8 @@ const DUMMY_CARS = [
     description:
       "A premium crossover with Honda Sensing safety suite. Spacious interior, fuel-efficient turbo engine, and excellent resale value. Kept in top condition by previous owner.",
     status: "available",
-    // Honda CR-V — silver crossover
-    photos: photos(["1758411898280-2dc7c95e0ba7","1622210642960-0f6a2cdbdc9f","1649296303096-38245976e01e","1639280791656-5f8506ff21d2"]),
+    // Honda CR-V — actual CR-V photos
+    photos: photos(["1681697390363-1142eb46b76d","1708148246994-b7b3c818090d","1623597780975-38ccd5030c83","1718603494523-ed04bd2115ae"]),
     roadworthiness: { status: "pass", expiryDate: "2025-09-30", notes: "All safety systems verified and operational." },
     serviceHistory: [
       { id: "s1", date: "2024-06-01", service: "Full PMS + Honda Sensing Calibration", mileage: 50000, notes: "50k major service — all fluids replaced, sensors calibrated", cost: 7200 },
@@ -81,6 +93,18 @@ const DUMMY_CARS = [
       { id: "p1", part: "Brake Pads (Front)", brand: "Honda Genuine", date: "2023-12-10", cost: 2800 },
       { id: "p2", part: "Transmission Fluid", brand: "Honda HCF-2", date: "2024-06-01", cost: 1200 },
     ],
+    financing: {
+      available: true,
+      estimatedDownPayment: 220000,
+      terms: [
+        { months: 12, monthlyAmortization: 83000 },
+        { months: 24, monthlyAmortization: 47000 },
+        { months: 36, monthlyAmortization: 35000 },
+        { months: 48, monthlyAmortization: 29000 },
+      ],
+      requiredSalary: 87000,
+      notes: "Figures are estimates based on 20% down payment and prevailing bank rates. Subject to credit approval.",
+    },
     partnerCost: 800000,
     repairCost: 15000,
     recommendedPrice: 1018750,
@@ -110,8 +134,8 @@ const DUMMY_CARS = [
     description:
       "A near-new Montero Sport GT with only 21,000 km on the clock. Premium leather interior, 360° camera, and Mitsubishi's S-AWC system. Like buying brand new at a fraction of the price.",
     status: "available",
-    // Mitsubishi Montero Sport — dark gray SUV studio
-    photos: photos(["1698533188457-58dc4a904efd","1698533189222-f53e9f4193b9","1698533188438-60a5f0d0238d","1698533710193-43fd271ec787"]),
+    // Mitsubishi Montero Sport — actual Montero photos
+    photos: photos(["1594978100646-ccd2ae32b711","1628684014602-88da45adfb43","1628684014586-37ceabbf311a","1664783856972-ac9922d7b2d3"]),
     roadworthiness: { status: "pass", expiryDate: "2026-03-15", notes: "Excellent condition. No issues found." },
     serviceHistory: [
       { id: "s1", date: "2024-08-20", service: "PMS at Mitsubishi Dealership", mileage: 20000, notes: "20k PMS — oil, filters, inspection", cost: 5800 },
@@ -119,6 +143,18 @@ const DUMMY_CARS = [
     partsReplaced: [
       { id: "p1", part: "Engine Oil", brand: "Castrol Edge 5W-30", date: "2024-08-20", cost: 3200 },
     ],
+    financing: {
+      available: true,
+      estimatedDownPayment: 330000,
+      terms: [
+        { months: 12, monthlyAmortization: 126000 },
+        { months: 24, monthlyAmortization: 72000 },
+        { months: 36, monthlyAmortization: 53000 },
+        { months: 48, monthlyAmortization: 44000 },
+      ],
+      requiredSalary: 132000,
+      notes: "Figures are estimates based on 20% down payment and prevailing bank rates. Subject to credit approval.",
+    },
     partnerCost: 1280000,
     repairCost: 8000,
     recommendedPrice: 1610000,
@@ -148,8 +184,8 @@ const DUMMY_CARS = [
     description:
       "The executive sedan that commands respect. This Camry has been well-maintained with records to prove it. Perfect for professionals who want a premium ride without the luxury car price tag.",
     status: "available",
-    // Toyota Camry — black sedan dark studio
-    photos: photos(["1737559694289-955ffb75cfac","1705563666935-4d0a72709948","1698533199374-f6ecdaaf5d3a","1736151101112-51574226fde6"]),
+    // Toyota Camry — actual Camry photos
+    photos: photos(["1621007947382-bb3c3994e3fb","1657872737697-737a2d123ef2","1624578571415-09e9b1991929","1581862142388-23e1c52ca091"]),
     roadworthiness: { status: "pass", expiryDate: "2025-06-30", notes: "Passed all inspection checkpoints." },
     serviceHistory: [
       { id: "s1", date: "2024-05-12", service: "Major PMS", mileage: 65000, notes: "Full 65k service — all consumables replaced", cost: 6500 },
@@ -160,6 +196,18 @@ const DUMMY_CARS = [
       { id: "p1", part: "Rear Shock Absorbers", brand: "KYB", date: "2023-11-08", cost: 7200 },
       { id: "p2", part: "Timing Belt Kit", brand: "Toyota Genuine", date: "2023-03-22", cost: 9800 },
     ],
+    financing: {
+      available: true,
+      estimatedDownPayment: 170000,
+      terms: [
+        { months: 12, monthlyAmortization: 65000 },
+        { months: 24, monthlyAmortization: 37000 },
+        { months: 36, monthlyAmortization: 27500 },
+        { months: 48, monthlyAmortization: 22500 },
+      ],
+      requiredSalary: 68000,
+      notes: "Figures are estimates based on 20% down payment and prevailing bank rates. Subject to credit approval.",
+    },
     partnerCost: 620000,
     repairCost: 32000,
     recommendedPrice: 815000,
@@ -189,8 +237,8 @@ const DUMMY_CARS = [
     description:
       "The Ranger Wildtrak is built for those who want capability with style. Race Red color turns heads wherever you go. Bi-turbo diesel delivers impressive power for both highway and off-road use.",
     status: "available",
-    // Ford Ranger Wildtrak — black pickup truck
-    photos: photos(["1601252300554-4ad551483bd2","1737218589271-81af9ff9bdbf","1686715018049-f73970aa97d3","1686507445019-e4939c9de8c4"]),
+    // Ford Ranger Wildtrak — actual Ranger photos
+    photos: photos(["1605893477799-b99e3b8b93fe","1700943937372-12c2611b5af8","1609362092918-47a34787c260","1641437638621-1de977395a9c"]),
     roadworthiness: { status: "pass", expiryDate: "2025-11-20", notes: "Passed. Frame and undercarriage in excellent condition." },
     serviceHistory: [
       { id: "s1", date: "2024-07-05", service: "PMS + 4WD System Check", mileage: 42000, notes: "Oil change, 4WD system verified, diff fluid replaced", cost: 5200 },
@@ -200,6 +248,18 @@ const DUMMY_CARS = [
       { id: "p1", part: "Rear Brake Pads", brand: "Brembo", date: "2024-01-15", cost: 3800 },
       { id: "p2", part: "Differential Fluid", brand: "Ford Genuine", date: "2024-07-05", cost: 1500 },
     ],
+    financing: {
+      available: true,
+      estimatedDownPayment: 250000,
+      terms: [
+        { months: 12, monthlyAmortization: 96000 },
+        { months: 24, monthlyAmortization: 54000 },
+        { months: 36, monthlyAmortization: 40000 },
+        { months: 48, monthlyAmortization: 33000 },
+      ],
+      requiredSalary: 99000,
+      notes: "Figures are estimates based on 20% down payment and prevailing bank rates. Subject to credit approval.",
+    },
     partnerCost: 960000,
     repairCost: 18000,
     recommendedPrice: 1222500,
@@ -229,8 +289,8 @@ const DUMMY_CARS = [
     description:
       "Hyundai Tucson offers Korean premium quality at a competitive price. Bold exterior design, generous cargo space, and a comfortable cabin. A smart choice for urban families.",
     status: "available",
-    // Hyundai Tucson — dark crossover studio
-    photos: photos(["1698533710193-43fd271ec787","1698533188457-58dc4a904efd","1698533188438-60a5f0d0238d","1705563666935-4d0a72709948"]),
+    // Hyundai Tucson — actual Tucson photos
+    photos: photos(["1575090536203-2a6193126514","1646029642262-022158ff5794","1705624843697-4461f9dce482","1704940225548-1420f7fed72f"]),
     roadworthiness: { status: "pass", expiryDate: "2025-08-15", notes: "Passed inspection. All lights and safety features operational." },
     serviceHistory: [
       { id: "s1", date: "2024-04-20", service: "PMS at Hyundai Dealership", mileage: 40000, notes: "40k major service", cost: 4800 },
@@ -240,6 +300,18 @@ const DUMMY_CARS = [
       { id: "p1", part: "AC Compressor Belt", brand: "Gates", date: "2023-10-05", cost: 850 },
       { id: "p2", part: "Cabin Air Filter", brand: "Hyundai Genuine", date: "2024-04-20", cost: 650 },
     ],
+    financing: {
+      available: true,
+      estimatedDownPayment: 200000,
+      terms: [
+        { months: 12, monthlyAmortization: 75000 },
+        { months: 24, monthlyAmortization: 43000 },
+        { months: 36, monthlyAmortization: 31500 },
+        { months: 48, monthlyAmortization: 26000 },
+      ],
+      requiredSalary: 78000,
+      notes: "Figures are estimates based on 20% down payment and prevailing bank rates. Subject to credit approval.",
+    },
     partnerCost: 720000,
     repairCost: 12000,
     recommendedPrice: 915000,
@@ -269,8 +341,8 @@ const DUMMY_CARS = [
     description:
       "A workhorse with a refined interior. The Navara has served well and has complete maintenance records. Ideal for business owners who need towing capacity and reliability.",
     status: "available",
-    // Nissan Navara — silver pickup truck
-    photos: photos(["1686715018049-f73970aa97d3","1676067926577-e65f135e7799","1686507445019-e4939c9de8c4","1601252300554-4ad551483bd2"]),
+    // Nissan Navara — actual Navara photos
+    photos: photos(["1551817280-6d59c77ce1b8","1693314515348-ce21281e8520","1618091171668-e1c3cf1ffce2","1712152775803-35a8f6937663"]),
     roadworthiness: { status: "pass", expiryDate: "2025-04-30", notes: "Passed. Minor surface rust on chassis treated and sealed." },
     serviceHistory: [
       { id: "s1", date: "2024-08-01", service: "Major PMS", mileage: 70000, notes: "70k full service — timing chain tensioner checked, all fluids replaced", cost: 9500 },
@@ -282,6 +354,18 @@ const DUMMY_CARS = [
       { id: "p2", part: "Lower Arm Bushings (Front)", brand: "Moog", date: "2023-08-30", cost: 3800 },
       { id: "p3", part: "Ball Joints (Front)", brand: "Moog", date: "2023-08-30", cost: 4500 },
     ],
+    financing: {
+      available: true,
+      estimatedDownPayment: 156000,
+      terms: [
+        { months: 12, monthlyAmortization: 60000 },
+        { months: 24, monthlyAmortization: 34000 },
+        { months: 36, monthlyAmortization: 25000 },
+        { months: 48, monthlyAmortization: 20500 },
+      ],
+      requiredSalary: 62000,
+      notes: "Figures are estimates based on 20% down payment and prevailing bank rates. Subject to credit approval.",
+    },
     partnerCost: 560000,
     repairCost: 42000,
     recommendedPrice: 752500,
@@ -311,8 +395,8 @@ const DUMMY_CARS = [
     description:
       "The undisputed king of Philippine vans. This HiAce Commuter has been used for business transport and maintained on schedule. High mileage but well-cared-for — all services done at Toyota dealer.",
     status: "available",
-    // Toyota HiAce — white van
-    photos: photos(["1677564923788-87d8a222d510","1737218589271-81af9ff9bdbf","1686715018049-f73970aa97d3","1686507445019-e4939c9de8c4"]),
+    // Toyota HiAce — actual HiAce photos
+    photos: photos(["1650807486050-a142ea418b19","1678747172256-b37b7ac99cfc","1521014710171-f44dfe788ece","1603094746214-44fe6eb80160"]),
     roadworthiness: { status: "pass", expiryDate: "2025-07-31", notes: "Commercial vehicle inspection passed. LTFRB compliant." },
     serviceHistory: [
       { id: "s1", date: "2024-09-01", service: "Full PMS", mileage: 88000, notes: "Complete service — all filters, belts, fluids replaced", cost: 8500 },
@@ -324,6 +408,18 @@ const DUMMY_CARS = [
       { id: "p2", part: "Fuel Filter", brand: "Toyota Genuine", date: "2024-09-01", cost: 950 },
       { id: "p3", part: "V-Belt Set", brand: "Toyota Genuine", date: "2024-09-01", cost: 1800 },
     ],
+    financing: {
+      available: true,
+      estimatedDownPayment: 170000,
+      terms: [
+        { months: 12, monthlyAmortization: 65000 },
+        { months: 24, monthlyAmortization: 37000 },
+        { months: 36, monthlyAmortization: 27500 },
+        { months: 48, monthlyAmortization: 22500 },
+      ],
+      requiredSalary: 68000,
+      notes: "Figures are estimates based on 20% down payment and prevailing bank rates. Subject to credit approval.",
+    },
     partnerCost: 620000,
     repairCost: 35000,
     recommendedPrice: 818750,
@@ -354,8 +450,8 @@ const DUMMY_CARS = [
     description:
       "The Civic RS Turbo — sporty styling meets everyday practicality. This near-new example was sold quickly due to high demand. Check our available listings for similar vehicles.",
     status: "sold",
-    // Honda Civic RS — dark sedan studio (sold)
-    photos: photos(["1736151101112-51574226fde6","1737559694289-955ffb75cfac","1705563666935-4d0a72709948","1698533199374-f6ecdaaf5d3a"]),
+    // Honda Civic RS — actual Civic photos (sold)
+    photos: photos(["1594070319944-7c0cbebb6f58","1570303278489-041bd897a873","1605816988069-b11383b50717","1623591457247-9dff667eae42"]),
     roadworthiness: { status: "pass", expiryDate: "2026-01-15", notes: "Excellent condition at time of sale." },
     serviceHistory: [
       { id: "s1", date: "2024-01-20", service: "PMS at Honda Dealership", mileage: 15000, notes: "15k service", cost: 3800 },
@@ -393,8 +489,8 @@ const DUMMY_CARS = [
     description:
       "This Strada GLS was snapped up within a week of listing. Premium trim with leather seats and all terrain capability. A reminder to inquire early on our available vehicles.",
     status: "sold",
-    // Mitsubishi Strada — black pickup (sold)
-    photos: photos(["1686507445019-e4939c9de8c4","1601252300554-4ad551483bd2","1676067926577-e65f135e7799","1737218589271-81af9ff9bdbf"]),
+    // Mitsubishi Strada — actual Strada/pickup photos (sold)
+    photos: photos(["1596429924638-d1f8a252df7d","1760560131262-dbbba7943cbd","1639419376686-0dc31185ff5a","1639419376680-348696a27488"]),
     roadworthiness: { status: "pass", expiryDate: "2025-05-20", notes: "Passed all checks at time of sale." },
     serviceHistory: [
       { id: "s1", date: "2024-06-10", service: "PMS", mileage: 55000, notes: "55k service", cost: 5200 },

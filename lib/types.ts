@@ -33,6 +33,19 @@ export interface Roadworthiness {
   notes: string;
 }
 
+export interface FinancingTerm {
+  months: 12 | 24 | 36 | 48;
+  monthlyAmortization: number;
+}
+
+export interface Financing {
+  available: boolean;
+  estimatedDownPayment: number;
+  terms: FinancingTerm[];
+  requiredSalary: number;
+  notes?: string;
+}
+
 export interface Car {
   id: string;
   brand: string;
@@ -63,6 +76,7 @@ export interface Car {
   paymentToPartner?: number;
   viewCount: number;
   inquiryCount: number;
+  financing?: Financing;
   slug: string;
   createdBy: string;
   createdAt: string;

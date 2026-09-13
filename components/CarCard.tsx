@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Car } from "@/lib/types";
-import { Gauge, Fuel, Settings2, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Gauge, Fuel, Settings2, CheckCircle, XCircle, Clock, Banknote } from "lucide-react";
 
 function formatPrice(p: number) {
   return "₱ " + p.toLocaleString("en-PH");
@@ -117,8 +117,15 @@ export default function CarCard({ car }: { car: Car }) {
           </span>
         </div>
 
-        {/* Roadworthy */}
-        <RoadworthyBadge status={car.roadworthiness?.status || "pending"} />
+        {/* Badges row */}
+        <div className="flex flex-wrap gap-2">
+          <RoadworthyBadge status={car.roadworthiness?.status || "pending"} />
+          {!isSold && (
+            <span className="flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase text-blue-400 bg-blue-400/10 border border-blue-400/30 px-2 py-1 rounded-sm">
+              <Banknote size={10} /> Easy Financing
+            </span>
+          )}
+        </div>
       </div>
 
       {/* CTA bar */}

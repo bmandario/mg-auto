@@ -55,7 +55,7 @@ export default function HeroBanner() {
             <span className="text-[#cc1111]">Next Car.</span>
           </h1>
           <p className="font-heading text-[#666] text-base sm:text-lg max-w-md mb-8 leading-relaxed">
-            Fully inspected, roadworthy certified pre-owned vehicles. Complete
+            Fully inspected by Master Garage, roadworthy certified pre-owned vehicles. Complete
             service history and parts transparency.
           </p>
 

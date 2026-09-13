@@ -6,16 +6,17 @@ import { Car } from "@/lib/types";
 import { Eye } from "lucide-react";
 
 export default function MostViewed({ cars }: { cars: Car[] }) {
+  const top5 = cars.slice(0, 5);
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-        {cars.map((car) => {
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        {top5.map((car) => {
           const photo = car.photos?.find((p) => p.isMain) || car.photos?.[0];
           return (
             <Link
               key={car.id}
               href={`/cars/${car.slug}`}
-              className="flex-shrink-0 w-64 group bg-[#111] border border-[#1f1f1f] hover:border-[#cc1111]/50 transition-all duration-300"
+              className="group bg-[#111] border border-[#1f1f1f] hover:border-[#cc1111]/50 transition-all duration-300"
             >
               <div className="relative aspect-video overflow-hidden bg-[#1a1a1a]">
                 {photo && (
@@ -48,3 +49,4 @@ export default function MostViewed({ cars }: { cars: Car[] }) {
     </div>
   );
 }
+
