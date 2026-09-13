@@ -13,7 +13,7 @@ export default async function HomePage() {
 
   try {
     [availableCars, soldCars] = await Promise.all([
-      getCars({ status: "available" }),
+      getCars({ status: "published" }),
       getCars({ status: "sold" }),
     ]);
   } catch {

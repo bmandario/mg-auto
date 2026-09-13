@@ -6,7 +6,7 @@ export const revalidate = 60;
 
 export async function generateStaticParams() {
   try {
-    const cars = await getCars({ status: "available" });
+    const cars = await getCars({ status: "published" });
     return cars.map((c) => ({ slug: c.slug }));
   } catch {
     return [];

@@ -29,7 +29,7 @@ const DUMMY_CARS = [
     driveType: "4x4",
     description:
       "One of the most popular SUVs in the Philippines. This Fortuner is in excellent condition with full service history from an authorized dealer. Perfect for family adventures and city driving.",
-    status: "available",
+    status: "published",
     // Toyota Fortuner — actual Fortuner photos
     photos: photos(["1664783856972-ac9922d7b2d3","1670054953044-2605dbd0d747","1619767886645-0ae16581bf6b","1581862142388-23e1c52ca091"]),
     roadworthiness: { status: "pass", expiryDate: "2025-12-31", notes: "Passed full LTO roadworthiness inspection." },
@@ -81,7 +81,7 @@ const DUMMY_CARS = [
     driveType: "FWD",
     description:
       "A premium crossover with Honda Sensing safety suite. Spacious interior, fuel-efficient turbo engine, and excellent resale value. Kept in top condition by previous owner.",
-    status: "available",
+    status: "published",
     // Honda CR-V — actual CR-V photos
     photos: photos(["1681697390363-1142eb46b76d","1708148246994-b7b3c818090d","1623597780975-38ccd5030c83","1718603494523-ed04bd2115ae"]),
     roadworthiness: { status: "pass", expiryDate: "2025-09-30", notes: "All safety systems verified and operational." },
@@ -133,7 +133,7 @@ const DUMMY_CARS = [
     driveType: "4x4",
     description:
       "A near-new Montero Sport GT with only 21,000 km on the clock. Premium leather interior, 360° camera, and Mitsubishi's S-AWC system. Like buying brand new at a fraction of the price.",
-    status: "available",
+    status: "published",
     // Mitsubishi Montero Sport — actual Montero photos
     photos: photos(["1594978100646-ccd2ae32b711","1628684014602-88da45adfb43","1628684014586-37ceabbf311a","1664783856972-ac9922d7b2d3"]),
     roadworthiness: { status: "pass", expiryDate: "2026-03-15", notes: "Excellent condition. No issues found." },
@@ -183,7 +183,7 @@ const DUMMY_CARS = [
     driveType: "FWD",
     description:
       "The executive sedan that commands respect. This Camry has been well-maintained with records to prove it. Perfect for professionals who want a premium ride without the luxury car price tag.",
-    status: "available",
+    status: "published",
     // Toyota Camry — actual Camry photos
     photos: photos(["1621007947382-bb3c3994e3fb","1657872737697-737a2d123ef2","1624578571415-09e9b1991929","1581862142388-23e1c52ca091"]),
     roadworthiness: { status: "pass", expiryDate: "2025-06-30", notes: "Passed all inspection checkpoints." },
@@ -236,7 +236,7 @@ const DUMMY_CARS = [
     driveType: "4x4",
     description:
       "The Ranger Wildtrak is built for those who want capability with style. Race Red color turns heads wherever you go. Bi-turbo diesel delivers impressive power for both highway and off-road use.",
-    status: "available",
+    status: "published",
     // Ford Ranger Wildtrak — actual Ranger photos
     photos: photos(["1605893477799-b99e3b8b93fe","1700943937372-12c2611b5af8","1609362092918-47a34787c260","1641437638621-1de977395a9c"]),
     roadworthiness: { status: "pass", expiryDate: "2025-11-20", notes: "Passed. Frame and undercarriage in excellent condition." },
@@ -288,7 +288,7 @@ const DUMMY_CARS = [
     driveType: "FWD",
     description:
       "Hyundai Tucson offers Korean premium quality at a competitive price. Bold exterior design, generous cargo space, and a comfortable cabin. A smart choice for urban families.",
-    status: "available",
+    status: "published",
     // Hyundai Tucson — actual Tucson photos
     photos: photos(["1575090536203-2a6193126514","1646029642262-022158ff5794","1705624843697-4461f9dce482","1704940225548-1420f7fed72f"]),
     roadworthiness: { status: "pass", expiryDate: "2025-08-15", notes: "Passed inspection. All lights and safety features operational." },
@@ -340,7 +340,7 @@ const DUMMY_CARS = [
     driveType: "4x4",
     description:
       "A workhorse with a refined interior. The Navara has served well and has complete maintenance records. Ideal for business owners who need towing capacity and reliability.",
-    status: "available",
+    status: "published",
     // Nissan Navara — actual Navara photos
     photos: photos(["1551817280-6d59c77ce1b8","1693314515348-ce21281e8520","1618091171668-e1c3cf1ffce2","1712152775803-35a8f6937663"]),
     roadworthiness: { status: "pass", expiryDate: "2025-04-30", notes: "Passed. Minor surface rust on chassis treated and sealed." },
@@ -394,7 +394,7 @@ const DUMMY_CARS = [
     driveType: "RWD",
     description:
       "The undisputed king of Philippine vans. This HiAce Commuter has been used for business transport and maintained on schedule. High mileage but well-cared-for — all services done at Toyota dealer.",
-    status: "available",
+    status: "published",
     // Toyota HiAce — actual HiAce photos
     photos: photos(["1650807486050-a142ea418b19","1678747172256-b37b7ac99cfc","1521014710171-f44dfe788ece","1603094746214-44fe6eb80160"]),
     roadworthiness: { status: "pass", expiryDate: "2025-07-31", notes: "Commercial vehicle inspection passed. LTFRB compliant." },

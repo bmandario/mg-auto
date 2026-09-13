@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 
 const links = [
-  { label: "Browse Units", href: "/" },
+  { label: "Available Units", href: "/#browse" },
   { label: "Sold Units", href: "/cars/sold" },
   { label: "About", href: "/about" },
   { label: "Contact Us", href: "#inquire" },

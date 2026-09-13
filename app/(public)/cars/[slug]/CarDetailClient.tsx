@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Car } from "@/lib/types";
+import { Car, DiagnosisStatus } from "@/lib/types";
 import { incrementViewCount } from "@/lib/cars";
 import { submitInquiry } from "@/lib/inquiries";
 import { motion } from "framer-motion";
 import {
   CheckCircle, XCircle, Clock, Gauge, Fuel, Settings2,
   Users, Zap, ChevronLeft, ChevronRight, X, Send, Banknote,
+  AlertTriangle,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -87,7 +88,7 @@ function RoadworthyBadge({ status }: { status: string }) {
 export default function CarDetailClient({ car }: { car: Car }) {
   const [activePhoto, setActivePhoto] = useState(0);
   const [lightbox, setLightbox] = useState(false);
-  const [tab, setTab] = useState<"overview" | "service" | "parts" | "financing">("overview");
+  const [tab, setTab] = useState<"overview" | "service" | "parts" | "financing" | "diagnosis">("overview");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -352,7 +353,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Tabs */}
           <div className="flex gap-0 mb-10 border-b border-[#1f1f1f] flex-wrap">
-            {(["overview", "service", "parts", "financing"] as const).map((t) => (
+            {(["overview", "service", "parts", "diagnosis", "financing"] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
@@ -362,7 +363,11 @@ export default function CarDetailClient({ car }: { car: Car }) {
                     : "border-transparent text-[#555] hover:text-[#aaa]"
                 }`}
               >
-                {t === "overview" ? "Overview" : t === "service" ? "Service History" : t === "parts" ? "Parts Replaced" : "Financing"}
+                {t === "overview" ? "Overview"
+                  : t === "service" ? "Service History"
+                  : t === "parts" ? "Parts Replaced"
+                  : t === "financing" ? "Financing"
+                  : "Diagnosis"}
               </button>
             ))}
           </div>
@@ -491,6 +496,127 @@ export default function CarDetailClient({ car }: { car: Car }) {
               <p className="text-[#333] text-xs">
                 * Figures are estimates only. Actual amounts may vary based on lender approval, credit standing, and prevailing interest rates.
               </p>
+            </div>
+          )}
+
+          {tab === "diagnosis" && (
+            <div>
+              {!car.diagnosis ? (
+                <p className="text-[#444] text-sm">No diagnosis records available for this unit.</p>
+              ) : (
+                <div className="space-y-6">
+                  {/* Header row */}
+                  <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#1f1f1f]">
+                    <div className="flex flex-wrap gap-6">
+                      {car.diagnosis.date && (
+                        <div>
+                          <p className="text-[10px] font-bold tracking-widest uppercase text-[#555] mb-1">Inspection Date</p>
+                          <p className="text-white text-sm">{formatDate(car.diagnosis.date)}</p>
+                        </div>
+                      )}
+                      {car.diagnosis.technician && (
+                        <div>
+                          <p className="text-[10px] font-bold tracking-widest uppercase text-[#555] mb-1">Technician</p>
+                          <p className="text-white text-sm">{car.diagnosis.technician}</p>
+                        </div>
+                      )}
+                    </div>
+                    {/* Overall status badge */}
+                    {car.diagnosis.overallStatus && (() => {
+                      const cfg: Record<DiagnosisStatus, { label: string; color: string; border: string; bg: string; icon: React.ReactNode }> = {
+                        ok:        { label: "All Clear",  color: "#4caf50", border: "#4caf5040", bg: "#4caf5018", icon: <CheckCircle size={16} /> },
+                        attention: { label: "Needs Attention", color: "#e0b840", border: "#e0b84040", bg: "#e0b84018", icon: <AlertTriangle size={16} /> },
+                        critical:  { label: "Critical Issues",  color: "#cc1111", border: "#cc111140", bg: "#cc111118", icon: <XCircle size={16} /> },
+                      };
+                      const c = cfg[car.diagnosis!.overallStatus];
+                      return (
+                        <div className="flex items-center gap-2 px-4 py-2 border text-sm font-bold tracking-widest uppercase"
+                          style={{ borderColor: c.border, color: c.color, backgroundColor: c.bg }}>
+                          <span>{c.icon}</span>
+                          {c.label}
+                        </div>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Summary pills */}
+                  <div className="flex flex-wrap gap-3">
+                    {([
+                      { status: "ok" as DiagnosisStatus,        label: "OK",        color: "#4caf50", border: "#4caf5040", icon: <CheckCircle size={12} /> },
+                      { status: "attention" as DiagnosisStatus,  label: "Attention", color: "#e0b840", border: "#e0b84040", icon: <AlertTriangle size={12} /> },
+                      { status: "critical" as DiagnosisStatus,   label: "Critical",  color: "#cc1111", border: "#cc111140", icon: <XCircle size={12} /> },
+                    ]).map(({ status, label, color, border, icon }) => {
+                      const count = car.diagnosis!.categories.flatMap(c => c.items).filter(i => i.status === status).length;
+                      return (
+                        <div key={status} className="flex items-center gap-1.5 px-3 py-1.5 border text-xs font-bold tracking-widest uppercase"
+                          style={{ borderColor: border, color }}>
+                          {icon}
+                          <span>{count} {label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Categories */}
+                  {car.diagnosis.categories.map((cat) => {
+                    const issues = cat.items.filter(i => i.status !== "ok").length;
+                    const dotColors: Record<DiagnosisStatus, string> = { ok: "#4caf50", attention: "#e0b840", critical: "#cc1111" };
+                    return (
+                      <div key={cat.category} className="border border-[#1f1f1f]">
+                        {/* Category heading */}
+                        <div className="flex items-center justify-between px-5 py-3 bg-[#0d0d0d]">
+                          <div className="flex items-center gap-3">
+                            <span className="text-xs font-bold tracking-[0.3em] uppercase text-white">{cat.category}</span>
+                            {issues > 0 && (
+                              <span className="text-[9px] font-bold tracking-wider px-2 py-0.5 border border-[#e0b840]/40 text-[#e0b840]">
+                                {issues} issue{issues > 1 ? "s" : ""}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex gap-1">
+                            {cat.items.map((item, ii) => (
+                              <span key={ii} className="w-2 h-2 rounded-full" style={{ backgroundColor: dotColors[item.status] }} />
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Items */}
+                        <div className="divide-y divide-[#1a1a1a]">
+                          {cat.items.map((item, ii) => {
+                            const statusCfg: Record<DiagnosisStatus, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
+                              ok:        { label: "OK",        color: "#4caf50", bg: "#4caf5018", icon: <CheckCircle size={12} /> },
+                              attention: { label: "Attention", color: "#e0b840", bg: "#e0b84018", icon: <AlertTriangle size={12} /> },
+                              critical:  { label: "Critical",  color: "#cc1111", bg: "#cc111118", icon: <XCircle size={12} /> },
+                            };
+                            const sc = statusCfg[item.status];
+                            return (
+                              <div key={ii} className="px-5 py-3 flex items-start justify-between gap-4">
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm text-white">{item.name}</p>
+                                  {item.notes && <p className="text-[#555] text-xs mt-0.5">{item.notes}</p>}
+                                </div>
+                                <div className="flex items-center gap-1 px-2.5 py-1 text-[9px] font-bold tracking-wider uppercase flex-shrink-0"
+                                  style={{ color: sc.color, backgroundColor: sc.bg }}>
+                                  {sc.icon}
+                                  <span className="ml-1">{sc.label}</span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {/* Overall notes */}
+                  {car.diagnosis.notes && (
+                    <div className="border-l-2 border-[#cc1111]/30 pl-4">
+                      <p className="text-[10px] font-bold tracking-widest uppercase text-[#555] mb-1">Diagnosis Notes</p>
+                      <p className="text-[#888] text-sm">{car.diagnosis.notes}</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>

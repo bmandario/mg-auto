@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Raleway, Bebas_Neue } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 // Heading font — Raleway for specs, labels, body
 const raleway = Raleway({
@@ -29,9 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${raleway.variable} ${bebasNeue.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-[#0a0a0a] text-[#f5f5f5]">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        {children}
       </body>
     </html>
   );

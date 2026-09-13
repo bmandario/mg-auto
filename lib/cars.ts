@@ -5,6 +5,7 @@ import {
   getDoc,
   addDoc,
   updateDoc,
+  arrayUnion,
   query,
   where,
   orderBy,
@@ -49,7 +50,7 @@ export async function getCarBySlug(slug: string): Promise<Car | null> {
 export async function getMostViewedCars(count = 6): Promise<Car[]> {
   const q = query(
     collection(db, COLLECTION),
-    where("status", "==", "available"),
+    where("status", "==", "published"),
     orderBy("viewCount", "desc"),
     limit(count)
   );
@@ -76,4 +77,17 @@ export async function addCar(car: Omit<Car, "id">): Promise<string> {
 export async function updateCar(id: string, data: Partial<Car>) {
   const ref = doc(db, COLLECTION, id);
   await updateDoc(ref, { ...data, updatedAt: new Date().toISOString() });
+}
+
+export async function logCarActivity(id: string, action: string, detail?: string) {
+  const ref = doc(db, COLLECTION, id);
+  await updateDoc(ref, {
+    activityLog: arrayUnion({ action, detail: detail ?? "", at: new Date().toISOString() }),
+  });
+}
+
+export async function getCarById(id: string): Promise<Car | null> {
+  const snap = await getDoc(doc(db, COLLECTION, id));
+  if (!snap.exists()) return null;
+  return { id: snap.id, ...snap.data() } as Car;
 }

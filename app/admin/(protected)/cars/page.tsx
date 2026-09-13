@@ -1,0 +1,339 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { getCars, updateCar, logCarActivity } from "@/lib/cars";
+import { getInquiries } from "@/lib/inquiries";
+import { Car } from "@/lib/types";
+import { EyeOff, BadgeCheck } from "lucide-react";
+
+type FilterTab = "all" | "published" | "unpublished" | "sold" | "draft";
+
+const STATUS_BADGE: Record<string, string> = {
+  published: "border-[#2a7a2a] text-[#4caf50]",
+  unpublished: "border-[#7a6a2a] text-[#e0b840]",
+  sold: "border-[#cc1111] text-[#cc1111]",
+  draft: "border-gray-300 text-gray-400",
+};
+
+export default function AdminCarsPage() {
+  const [cars, setCars] = useState<Car[]>([]);
+  const [inquiryCounts, setInquiryCounts] = useState<Record<string, number>>({});
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<FilterTab>("published");
+  const [unpublishing, setUnpublishing] = useState<string | null>(null);
+  const [marking, setMarking] = useState<string | null>(null);
+
+  // Unpublish modal
+  const [confirmCar, setConfirmCar] = useState<{ id: string; title: string } | null>(null);
+
+  // Sold modal
+  const [soldCar, setSoldCar] = useState<{ id: string; title: string; sellingPrice: number } | null>(null);
+  const [soldPrice, setSoldPrice] = useState("");
+  const [soldDate, setSoldDate] = useState(() => new Date().toISOString().split("T")[0]);
+  const [soldError, setSoldError] = useState("");
+
+  const fetchCars = async () => {
+    setLoading(true);
+    try {
+      const [data, inquiries] = await Promise.all([getCars(), getInquiries()]);
+      setCars(data);
+      const counts: Record<string, number> = {};
+      inquiries.forEach((inq) => {
+        counts[inq.carId] = (counts[inq.carId] || 0) + 1;
+      });
+      setInquiryCounts(counts);
+    } catch {
+      // ignore
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchCars(); }, []);
+
+  const handleUnpublishConfirm = async () => {
+    if (!confirmCar) return;
+    setUnpublishing(confirmCar.id);
+    setConfirmCar(null);
+    try {
+      await updateCar(confirmCar.id, { status: "unpublished", updatedAt: new Date().toISOString() });
+      await logCarActivity(confirmCar.id, "Moved to Unpublished");
+      setCars((prev) => prev.map((c) => c.id === confirmCar.id ? { ...c, status: "unpublished" } : c));
+    } catch {
+      alert("Failed to unpublish unit.");
+    } finally {
+      setUnpublishing(null);
+    }
+  };
+
+  const openSoldModal = (car: Car) => {
+    setSoldCar({ id: car.id, title: `${car.brand} ${car.model}`, sellingPrice: car.sellingPrice || 0 });
+    setSoldPrice(String(car.sellingPrice || ""));
+    setSoldDate(new Date().toISOString().split("T")[0]);
+    setSoldError("");
+  };
+
+  const handleMarkSold = async () => {
+    if (!soldCar) return;
+    const price = Number(soldPrice);
+    if (!price || price <= 0) { setSoldError("Please enter a valid sold price."); return; }
+    if (!soldDate) { setSoldError("Please enter the sold date."); return; }
+    setMarking(soldCar.id);
+    setSoldCar(null);
+    try {
+      await updateCar(soldCar.id, {
+        status: "sold",
+        soldPrice: price,
+        soldDate,
+        updatedAt: new Date().toISOString(),
+      });
+      await logCarActivity(soldCar.id, "Marked as Sold", `₱${price.toLocaleString("en-PH")} on ${soldDate}`);
+      setCars((prev) => prev.map((c) => c.id === soldCar.id ? { ...c, status: "sold", soldPrice: price, soldDate } : c));
+    } catch {
+      alert("Failed to mark unit as sold.");
+    } finally {
+      setMarking(null);
+    }
+  };
+
+  const filtered = filter === "all" ? cars : cars.filter((c) => c.status === filter);
+  const tabs: FilterTab[] = ["all", "published", "unpublished", "sold", "draft"];
+  const tabCount = (t: FilterTab) => (t === "all" ? cars.length : cars.filter((c) => c.status === t).length);
+
+  return (
+    <div>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111] mb-1">Inventory</p>
+          <h1 className="font-display text-4xl text-gray-900 tracking-wide">Units</h1>
+        </div>
+        <Link
+          href="/admin/cars/new"
+          className="bg-[#cc1111] text-white px-5 py-2.5 text-xs font-bold tracking-[0.3em] uppercase hover:bg-[#aa0e0e] transition-colors"
+        >
+          + Add New Unit
+        </Link>
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="flex gap-0 mb-6 border-b border-gray-200">
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setFilter(tab)}
+            className={`px-5 py-3 text-[10px] font-bold tracking-[0.3em] uppercase transition-colors border-b-2 -mb-px ${
+              filter === tab
+                ? "border-[#cc1111] text-[#cc1111]"
+                : "border-transparent text-gray-400 hover:text-gray-700"
+            }`}
+          >
+            {tab} ({tabCount(tab)})
+          </button>
+        ))}
+      </div>
+
+      {/* Table */}
+      <div className="bg-white border border-gray-200">
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="w-8 h-8 border-2 border-gray-200 border-t-[#cc1111] rounded-full animate-spin" />
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="py-16 text-center text-gray-400 text-sm">No units found.</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  {["Photo", "Brand / Model", "Year", "Status", "Price", "Views", "Inquiries", "Actions"].map((h) => (
+                    <th key={h} className="px-5 py-3 text-left text-[9px] font-bold tracking-[0.3em] uppercase text-gray-400">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((car) => {
+                  const mainPhoto = car.photos?.find((p) => p.isMain) || car.photos?.[0];
+                  return (
+                    <tr key={car.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="px-5 py-3">
+                        {mainPhoto ? (
+                          <Image src={mainPhoto.url} alt={`${car.brand} ${car.model}`} width={40} height={30} className="object-cover w-10 h-8" />
+                        ) : (
+                          <div className="w-10 h-8 bg-gray-100 border border-gray-200 flex items-center justify-center">
+                            <span className="text-[8px] text-gray-400">NO IMG</span>
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-5 py-3">
+                        <p className="text-sm font-semibold text-gray-900">{car.brand} {car.model}</p>
+                      </td>
+                      <td className="px-5 py-3 text-sm text-gray-500">{car.year}</td>
+                      <td className="px-5 py-3">
+                        <span className={`border text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-0.5 ${STATUS_BADGE[car.status] ?? "border-gray-300 text-gray-400"}`}>
+                          {car.status}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3 text-sm">
+                        <p className="text-gray-900">₱{(car.sellingPrice || 0).toLocaleString()}</p>
+                        {car.status === "sold" && car.soldPrice && (
+                          <p className="text-green-600 font-semibold text-[11px] mt-0.5">
+                            Sold ₱{car.soldPrice.toLocaleString()}
+                          </p>
+                        )}
+                      </td>
+                      <td className="px-5 py-3 text-sm text-gray-500">{car.viewCount || 0}</td>
+                      <td className="px-5 py-3">
+                        {(inquiryCounts[car.id] || 0) > 0 ? (
+                          <span className="border border-[#cc1111]/40 text-[#cc1111] text-[9px] font-bold tracking-widest px-2 py-0.5">
+                            {inquiryCounts[car.id]}
+                          </span>
+                        ) : (
+                          <span className="text-gray-300 text-sm">—</span>
+                        )}
+                      </td>
+                      <td className="px-5 py-3">
+                        <div className="flex gap-1.5 flex-wrap">
+                          <Link
+                            href={`/admin/cars/${car.id}/view`}
+                            className="bg-blue-600 text-white px-2.5 py-1 text-[9px] font-bold tracking-[0.15em] uppercase hover:bg-blue-700 transition-colors"
+                          >
+                            View
+                          </Link>
+                          {car.status === "published" && (
+                            <>
+                              <button
+                                onClick={() => openSoldModal(car)}
+                                disabled={marking === car.id}
+                                className="bg-green-600 text-white px-2.5 py-1 text-[9px] font-bold tracking-[0.15em] uppercase hover:bg-green-700 transition-colors disabled:opacity-40"
+                              >
+                                {marking === car.id ? "..." : "Sold"}
+                              </button>
+                              <button
+                                onClick={() => setConfirmCar({ id: car.id, title: `${car.brand} ${car.model}` })}
+                                disabled={unpublishing === car.id}
+                                className="bg-amber-100 text-amber-700 px-2.5 py-1 text-[9px] font-bold tracking-[0.15em] uppercase hover:bg-amber-200 transition-colors disabled:opacity-40"
+                              >
+                                {unpublishing === car.id ? "..." : "Unpublish"}
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Mark Sold Modal */}
+      {soldCar && (
+        <div
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4"
+          onClick={(e) => { if (e.target === e.currentTarget) setSoldCar(null); }}
+        >
+          <div className="bg-white border border-gray-200 shadow-xl w-full max-w-sm p-8">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 rounded-full bg-green-50 border border-green-200 flex items-center justify-center shrink-0">
+                <BadgeCheck size={18} className="text-green-600" />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400">Mark as Sold</p>
+                <h3 className="text-base font-bold text-gray-900 uppercase tracking-wide">{soldCar.title}</h3>
+              </div>
+            </div>
+
+            <div className="space-y-5">
+              <div>
+                <label className="block text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400 mb-1">
+                  Actual Sold Price (₱)
+                </label>
+                <input
+                  type="number"
+                  value={soldPrice}
+                  onChange={(e) => { setSoldPrice(e.target.value); setSoldError(""); }}
+                  placeholder={soldCar.sellingPrice.toLocaleString()}
+                  className="w-full bg-transparent border-b border-gray-300 focus:border-[#cc1111] text-gray-900 placeholder-gray-300 py-2 text-sm outline-none transition-colors"
+                />
+                <p className="text-[10px] text-gray-400 mt-1">Listed at ₱{soldCar.sellingPrice.toLocaleString()}</p>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400 mb-1">
+                  Date Sold
+                </label>
+                <input
+                  type="date"
+                  value={soldDate}
+                  onChange={(e) => { setSoldDate(e.target.value); setSoldError(""); }}
+                  className="w-full bg-transparent border-b border-gray-300 focus:border-[#cc1111] text-gray-900 py-2 text-sm outline-none transition-colors"
+                />
+              </div>
+
+              {soldError && <p className="text-xs text-[#cc1111]">{soldError}</p>}
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setSoldCar(null)}
+                className="flex-1 border border-gray-300 text-gray-500 py-2.5 text-xs font-bold tracking-[0.3em] uppercase hover:border-gray-700 hover:text-gray-900 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleMarkSold}
+                className="flex-1 bg-green-600 text-white py-2.5 text-xs font-bold tracking-[0.3em] uppercase hover:bg-green-700 transition-colors"
+              >
+                Confirm Sold
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Unpublish Confirm Modal */}
+      {confirmCar && (
+        <div
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4"
+          onClick={(e) => { if (e.target === e.currentTarget) setConfirmCar(null); }}
+        >
+          <div className="bg-white border border-gray-200 shadow-xl w-full max-w-sm p-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center shrink-0">
+                <EyeOff size={18} className="text-[#e0b840]" />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400">Confirm Action</p>
+                <h3 className="text-base font-bold text-gray-900 uppercase tracking-wide">Unpublish Unit</h3>
+              </div>
+            </div>
+            <p className="text-sm text-gray-600 mb-1">You are about to unpublish:</p>
+            <p className="text-sm font-bold text-gray-900 mb-4">{confirmCar.title}</p>
+            <p className="text-xs text-gray-400 mb-6">
+              This unit will no longer be visible to the public. You can re-publish it at any time from the edit page.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirmCar(null)}
+                className="flex-1 border border-gray-300 text-gray-500 py-2.5 text-xs font-bold tracking-[0.3em] uppercase hover:border-gray-700 hover:text-gray-900 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUnpublishConfirm}
+                className="flex-1 border border-[#7a6a2a] text-[#e0b840] py-2.5 text-xs font-bold tracking-[0.3em] uppercase hover:bg-[#7a6a2a] hover:text-white transition-colors"
+              >
+                Yes, Unpublish
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
