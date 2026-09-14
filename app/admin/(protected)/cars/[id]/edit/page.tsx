@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { updateCar } from "@/lib/cars";
+import { updateCar, logCarActivity } from "@/lib/cars";
+import { addNotification } from "@/lib/notifications";
 import { Car } from "@/lib/types";
 import CarForm from "@/components/admin/CarForm";
 
@@ -39,14 +40,19 @@ export default function EditCarPage() {
 
   const handleSubmit = async (data: any) => {
     setIsLoading(true);
+    const isFirstPublish = data.status === "published" && !car?.publishedAt;
     try {
       await updateCar(id, {
         ...data,
         updatedAt: new Date().toISOString(),
-        ...(data.status === "published" && !car?.publishedAt
-          ? { publishedAt: new Date().toISOString() }
-          : {}),
+        ...(isFirstPublish ? { publishedAt: new Date().toISOString() } : {}),
       });
+      if (isFirstPublish) {
+        await logCarActivity(id, "Published to public listing");
+        if (car?.partnerId) {
+          await addNotification(car.partnerId, "published", id, `${car.brand} ${car.model}`, `Your unit ${car.brand} ${car.model} is now live on the public listing.`);
+        }
+      }
       router.push("/admin/cars");
     } catch (err) {
       console.error(err);

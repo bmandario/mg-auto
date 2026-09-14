@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getCarById, updateCar, logCarActivity } from "@/lib/cars";
+import { addNotification } from "@/lib/notifications";
 import { Car, ActivityEntry } from "@/lib/types";
 import {
   ArrowLeft, Pencil, ExternalLink, BadgeCheck, EyeOff,
@@ -73,6 +74,7 @@ export default function CarViewPage() {
   const [showSoldModal, setShowSoldModal] = useState(false);
   const [soldPrice, setSoldPrice] = useState("");
   const [soldDate, setSoldDate] = useState(() => new Date().toISOString().split("T")[0]);
+  const [paymentToPartner, setPaymentToPartner] = useState("");
   const [soldError, setSoldError] = useState("");
 
   useEffect(() => {
@@ -87,12 +89,16 @@ export default function CarViewPage() {
     const price = Number(soldPrice);
     if (!price || price <= 0) { setSoldError("Please enter a valid sold price."); return; }
     if (!soldDate) { setSoldError("Please enter the sold date."); return; }
+    const payment = Number(paymentToPartner) || 0;
     setMarking(true);
     setShowSoldModal(false);
     try {
-      await updateCar(id, { status: "sold", soldPrice: price, soldDate, updatedAt: new Date().toISOString() });
+      await updateCar(id, { status: "sold", soldPrice: price, soldDate, paymentToPartner: payment, updatedAt: new Date().toISOString() });
       await logCarActivity(id, "Marked as Sold", `₱${price.toLocaleString("en-PH")} on ${soldDate}`);
-      setCar((prev) => prev ? { ...prev, status: "sold", soldPrice: price, soldDate } : prev);
+      if (car.partnerId) {
+        await addNotification(car.partnerId, "sold", id, `${car.brand} ${car.model}`, `Your unit ${car.brand} ${car.model} has been sold for ₱${price.toLocaleString("en-PH")}.`);
+      }
+      setCar((prev) => prev ? { ...prev, status: "sold", soldPrice: price, soldDate, paymentToPartner: payment } : prev);
     } catch {
       alert("Failed to mark unit as sold.");
     } finally {
@@ -136,7 +142,7 @@ export default function CarViewPage() {
         <div className="flex items-center gap-2 shrink-0 mt-6">
           {car.status === "published" && (
             <button
-              onClick={() => { setSoldPrice(String(car.sellingPrice || "")); setSoldDate(new Date().toISOString().split("T")[0]); setSoldError(""); setShowSoldModal(true); }}
+              onClick={() => { setSoldPrice(String(car.sellingPrice || "")); setSoldDate(new Date().toISOString().split("T")[0]); setPaymentToPartner(String(car.partnerCost || "")); setSoldError(""); setShowSoldModal(true); }}
               disabled={marking}
               className="bg-green-600 text-white px-4 py-2 text-xs font-bold tracking-[0.2em] uppercase hover:bg-green-700 transition-colors disabled:opacity-40"
             >
@@ -149,10 +155,12 @@ export default function CarViewPage() {
               <ExternalLink size={12} /> View as Public
             </a>
           )}
-          <Link href={`/admin/cars/${id}/edit`}
-            className="flex items-center gap-1.5 bg-gray-700 text-white px-4 py-2 text-xs font-bold tracking-[0.2em] uppercase hover:bg-gray-900 transition-colors">
-            <Pencil size={12} /> Edit
-          </Link>
+          {car.status !== "sold" && (
+            <Link href={`/admin/cars/${id}/edit`}
+              className="flex items-center gap-1.5 bg-gray-700 text-white px-4 py-2 text-xs font-bold tracking-[0.2em] uppercase hover:bg-gray-900 transition-colors">
+              <Pencil size={12} /> Edit
+            </Link>
+          )}
         </div>
       </div>
 
@@ -572,6 +580,17 @@ export default function CarViewPage() {
                   onChange={(e) => { setSoldDate(e.target.value); setSoldError(""); }}
                   className="w-full bg-transparent border-b border-gray-300 focus:border-[#cc1111] text-gray-900 py-2 text-sm outline-none transition-colors"
                 />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400 mb-1">Payment to Partner (₱)</label>
+                <input
+                  type="number"
+                  value={paymentToPartner}
+                  onChange={(e) => { setPaymentToPartner(e.target.value); setSoldError(""); }}
+                  placeholder="0"
+                  className="w-full bg-transparent border-b border-gray-300 focus:border-[#cc1111] text-gray-900 placeholder-gray-300 py-2 text-sm outline-none transition-colors"
+                />
+                {car.partnerName && <p className="text-[10px] text-gray-400 mt-1">Partner: {car.partnerName}</p>}
               </div>
               {soldError && <p className="text-xs text-[#cc1111]">{soldError}</p>}
             </div>

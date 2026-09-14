@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getInquiries, updateInquiryStatus } from "@/lib/inquiries";
 import { Inquiry } from "@/lib/types";
+import { Search, X } from "lucide-react";
 
 type Filter = "all" | "new" | "read" | "responded";
 
@@ -16,6 +17,9 @@ export default function InquiriesPage() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Filter>("all");
+  const [search, setSearch] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
   const [updating, setUpdating] = useState<string | null>(null);
 
   const fetchInquiries = async () => {
@@ -44,15 +48,86 @@ export default function InquiriesPage() {
     }
   };
 
-  const filtered = filter === "all" ? inquiries : inquiries.filter((i) => i.status === filter);
+  const hasFilters = search || dateFrom || dateTo;
+
+  const applyFilters = (list: Inquiry[]) => {
+    let out = list;
+    if (search) {
+      const q = search.toLowerCase();
+      out = out.filter((i) =>
+        i.name.toLowerCase().includes(q) ||
+        i.email.toLowerCase().includes(q) ||
+        i.phone.includes(q) ||
+        i.carTitle.toLowerCase().includes(q) ||
+        i.message.toLowerCase().includes(q)
+      );
+    }
+    if (dateFrom) out = out.filter((i) => new Date(i.createdAt) >= new Date(dateFrom));
+    if (dateTo) {
+      const to = new Date(dateTo);
+      to.setHours(23, 59, 59);
+      out = out.filter((i) => new Date(i.createdAt) <= to);
+    }
+    return out;
+  };
+
+  const byStatus = filter === "all" ? inquiries : inquiries.filter((i) => i.status === filter);
+  const filtered = applyFilters(byStatus);
   const tabs: Filter[] = ["all", "new", "read", "responded"];
-  const tabCount = (t: Filter) => (t === "all" ? inquiries.length : inquiries.filter((i) => i.status === t).length);
+  const tabCount = (t: Filter) => {
+    const byTab = t === "all" ? inquiries : inquiries.filter((i) => i.status === t);
+    return applyFilters(byTab).length;
+  };
+  const clearFilters = () => { setSearch(""); setDateFrom(""); setDateTo(""); };
 
   return (
     <div>
       <div className="mb-8">
         <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111] mb-1">Leads</p>
         <h1 className="font-display text-4xl text-gray-900 tracking-wide">Inquiries</h1>
+      </div>
+
+      {/* Search + Filters */}
+      <div className="bg-white border border-gray-200 p-4 mb-5 flex flex-wrap items-end gap-3">
+        <div className="relative flex-1 min-w-[220px]">
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search name, email, phone, car, message..."
+            className="w-full pl-8 pr-3 py-2 text-sm border border-gray-200 focus:border-[#cc1111] outline-none text-gray-900 placeholder-gray-400 bg-transparent"
+          />
+        </div>
+
+        <div>
+          <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-gray-400 mb-1">From</p>
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="border border-gray-200 text-sm text-gray-700 px-3 py-2 outline-none focus:border-[#cc1111] bg-white"
+          />
+        </div>
+
+        <div>
+          <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-gray-400 mb-1">To</p>
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="border border-gray-200 text-sm text-gray-700 px-3 py-2 outline-none focus:border-[#cc1111] bg-white"
+          />
+        </div>
+
+        {hasFilters && (
+          <button
+            onClick={clearFilters}
+            className="flex items-center gap-1.5 text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 hover:text-[#cc1111] transition-colors pb-0.5"
+          >
+            <X size={12} /> Clear
+          </button>
+        )}
       </div>
 
       {/* Filter Tabs */}
@@ -78,7 +153,9 @@ export default function InquiriesPage() {
             <div className="w-8 h-8 border-2 border-gray-200 border-t-[#cc1111] rounded-full animate-spin" />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="py-16 text-center text-gray-400 text-sm">No inquiries found.</div>
+          <div className="py-16 text-center text-gray-400 text-sm">
+            {hasFilters ? "No inquiries match your search or filters." : "No inquiries found."}
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">

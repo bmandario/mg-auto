@@ -5,8 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { getCars, updateCar, logCarActivity } from "@/lib/cars";
 import { getInquiries } from "@/lib/inquiries";
-import { Car } from "@/lib/types";
-import { EyeOff, BadgeCheck } from "lucide-react";
+import { addNotification } from "@/lib/notifications";
+import { Car, CAR_BRANDS, CAR_TYPES } from "@/lib/types";
+import { EyeOff, BadgeCheck, Search, X } from "lucide-react";
 
 type FilterTab = "all" | "published" | "unpublished" | "sold" | "draft";
 
@@ -22,6 +23,10 @@ export default function AdminCarsPage() {
   const [inquiryCounts, setInquiryCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<FilterTab>("published");
+  const [search, setSearch] = useState("");
+  const [brandFilter, setBrandFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
+  const [yearFilter, setYearFilter] = useState("");
   const [unpublishing, setUnpublishing] = useState<string | null>(null);
   const [marking, setMarking] = useState<string | null>(null);
 
@@ -29,9 +34,10 @@ export default function AdminCarsPage() {
   const [confirmCar, setConfirmCar] = useState<{ id: string; title: string } | null>(null);
 
   // Sold modal
-  const [soldCar, setSoldCar] = useState<{ id: string; title: string; sellingPrice: number } | null>(null);
+  const [soldCar, setSoldCar] = useState<{ id: string; title: string; sellingPrice: number; partnerId: string; partnerName: string } | null>(null);
   const [soldPrice, setSoldPrice] = useState("");
   const [soldDate, setSoldDate] = useState(() => new Date().toISOString().split("T")[0]);
+  const [paymentToPartner, setPaymentToPartner] = useState("");
   const [soldError, setSoldError] = useState("");
 
   const fetchCars = async () => {
@@ -69,9 +75,10 @@ export default function AdminCarsPage() {
   };
 
   const openSoldModal = (car: Car) => {
-    setSoldCar({ id: car.id, title: `${car.brand} ${car.model}`, sellingPrice: car.sellingPrice || 0 });
+    setSoldCar({ id: car.id, title: `${car.brand} ${car.model}`, sellingPrice: car.sellingPrice || 0, partnerId: car.partnerId || "", partnerName: car.partnerName || "" });
     setSoldPrice(String(car.sellingPrice || ""));
     setSoldDate(new Date().toISOString().split("T")[0]);
+    setPaymentToPartner(String(car.partnerCost || ""));
     setSoldError("");
   };
 
@@ -80,17 +87,23 @@ export default function AdminCarsPage() {
     const price = Number(soldPrice);
     if (!price || price <= 0) { setSoldError("Please enter a valid sold price."); return; }
     if (!soldDate) { setSoldError("Please enter the sold date."); return; }
+    const payment = Number(paymentToPartner) || 0;
     setMarking(soldCar.id);
+    const soldCarSnapshot = { ...soldCar };
     setSoldCar(null);
     try {
-      await updateCar(soldCar.id, {
+      await updateCar(soldCarSnapshot.id, {
         status: "sold",
         soldPrice: price,
         soldDate,
+        paymentToPartner: payment,
         updatedAt: new Date().toISOString(),
       });
-      await logCarActivity(soldCar.id, "Marked as Sold", `₱${price.toLocaleString("en-PH")} on ${soldDate}`);
-      setCars((prev) => prev.map((c) => c.id === soldCar.id ? { ...c, status: "sold", soldPrice: price, soldDate } : c));
+      await logCarActivity(soldCarSnapshot.id, "Marked as Sold", `₱${price.toLocaleString("en-PH")} on ${soldDate}`);
+      if (soldCarSnapshot.partnerId) {
+        await addNotification(soldCarSnapshot.partnerId, "sold", soldCarSnapshot.id, soldCarSnapshot.title, `Your unit ${soldCarSnapshot.title} has been sold for ₱${price.toLocaleString("en-PH")}.`);
+      }
+      setCars((prev) => prev.map((c) => c.id === soldCarSnapshot.id ? { ...c, status: "sold", soldPrice: price, soldDate, paymentToPartner: payment } : c));
     } catch {
       alert("Failed to mark unit as sold.");
     } finally {
@@ -98,9 +111,36 @@ export default function AdminCarsPage() {
     }
   };
 
-  const filtered = filter === "all" ? cars : cars.filter((c) => c.status === filter);
+  const hasFilters = search || brandFilter || typeFilter || yearFilter;
+
+  const applyFilters = (list: Car[]) => {
+    let out = list;
+    if (search) {
+      const q = search.toLowerCase();
+      out = out.filter((c) =>
+        `${c.brand} ${c.model}`.toLowerCase().includes(q) ||
+        String(c.year).includes(q) ||
+        (c.partnerName || "").toLowerCase().includes(q)
+      );
+    }
+    if (brandFilter) out = out.filter((c) => c.brand === brandFilter);
+    if (typeFilter)  out = out.filter((c) => c.carType === typeFilter);
+    if (yearFilter)  out = out.filter((c) => String(c.year) === yearFilter);
+    return out;
+  };
+
+  const byStatus = filter === "all" ? cars : cars.filter((c) => c.status === filter);
+  const filtered = applyFilters(byStatus);
+
   const tabs: FilterTab[] = ["all", "published", "unpublished", "sold", "draft"];
-  const tabCount = (t: FilterTab) => (t === "all" ? cars.length : cars.filter((c) => c.status === t).length);
+  const tabCount = (t: FilterTab) => {
+    const byTab = t === "all" ? cars : cars.filter((c) => c.status === t);
+    return applyFilters(byTab).length;
+  };
+
+  const yearOptions = [...new Set(cars.map((c) => String(c.year)))].sort((a, b) => Number(b) - Number(a));
+
+  const clearFilters = () => { setSearch(""); setBrandFilter(""); setTypeFilter(""); setYearFilter(""); };
 
   return (
     <div>
@@ -116,6 +156,61 @@ export default function AdminCarsPage() {
         >
           + Add New Unit
         </Link>
+      </div>
+
+      {/* Search + Filters */}
+      <div className="bg-white border border-gray-200 p-4 mb-5 flex flex-wrap items-end gap-3">
+        {/* Search */}
+        <div className="relative flex-1 min-w-[200px]">
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search brand, model, year, partner..."
+            className="w-full pl-8 pr-3 py-2 text-sm border border-gray-200 focus:border-[#cc1111] outline-none text-gray-900 placeholder-gray-400 bg-transparent"
+          />
+        </div>
+
+        {/* Brand */}
+        <select
+          value={brandFilter}
+          onChange={(e) => setBrandFilter(e.target.value)}
+          className="border border-gray-200 text-sm text-gray-700 px-3 py-2 outline-none focus:border-[#cc1111] bg-white"
+        >
+          <option value="">All Brands</option>
+          {CAR_BRANDS.map((b) => <option key={b} value={b}>{b}</option>)}
+        </select>
+
+        {/* Car Type */}
+        <select
+          value={typeFilter}
+          onChange={(e) => setTypeFilter(e.target.value)}
+          className="border border-gray-200 text-sm text-gray-700 px-3 py-2 outline-none focus:border-[#cc1111] bg-white"
+        >
+          <option value="">All Types</option>
+          {CAR_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+        </select>
+
+        {/* Year */}
+        <select
+          value={yearFilter}
+          onChange={(e) => setYearFilter(e.target.value)}
+          className="border border-gray-200 text-sm text-gray-700 px-3 py-2 outline-none focus:border-[#cc1111] bg-white"
+        >
+          <option value="">All Years</option>
+          {yearOptions.map((y) => <option key={y} value={y}>{y}</option>)}
+        </select>
+
+        {/* Clear */}
+        {hasFilters && (
+          <button
+            onClick={clearFilters}
+            className="flex items-center gap-1.5 text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 hover:text-[#cc1111] transition-colors"
+          >
+            <X size={12} /> Clear
+          </button>
+        )}
       </div>
 
       {/* Filter Tabs */}
@@ -142,7 +237,9 @@ export default function AdminCarsPage() {
             <div className="w-8 h-8 border-2 border-gray-200 border-t-[#cc1111] rounded-full animate-spin" />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="py-16 text-center text-gray-400 text-sm">No units found.</div>
+          <div className="py-16 text-center text-gray-400 text-sm">
+            {hasFilters ? "No units match your search or filters." : "No units found."}
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -198,7 +295,7 @@ export default function AdminCarsPage() {
                         <div className="flex gap-1.5 flex-wrap">
                           <Link
                             href={`/admin/cars/${car.id}/view`}
-                            className="bg-blue-600 text-white px-2.5 py-1 text-[9px] font-bold tracking-[0.15em] uppercase hover:bg-blue-700 transition-colors"
+                            className="bg-gray-100 text-gray-500 px-2.5 py-1 text-[9px] font-bold tracking-[0.15em] uppercase hover:bg-red-100 hover:text-[#cc1111] transition-colors"
                           >
                             View
                           </Link>
@@ -207,14 +304,14 @@ export default function AdminCarsPage() {
                               <button
                                 onClick={() => openSoldModal(car)}
                                 disabled={marking === car.id}
-                                className="bg-green-600 text-white px-2.5 py-1 text-[9px] font-bold tracking-[0.15em] uppercase hover:bg-green-700 transition-colors disabled:opacity-40"
+                                className="bg-gray-100 text-gray-500 px-2.5 py-1 text-[9px] font-bold tracking-[0.15em] uppercase hover:bg-red-100 hover:text-[#cc1111] transition-colors disabled:opacity-40"
                               >
                                 {marking === car.id ? "..." : "Sold"}
                               </button>
                               <button
                                 onClick={() => setConfirmCar({ id: car.id, title: `${car.brand} ${car.model}` })}
                                 disabled={unpublishing === car.id}
-                                className="bg-amber-100 text-amber-700 px-2.5 py-1 text-[9px] font-bold tracking-[0.15em] uppercase hover:bg-amber-200 transition-colors disabled:opacity-40"
+                                className="bg-gray-100 text-gray-500 px-2.5 py-1 text-[9px] font-bold tracking-[0.15em] uppercase hover:bg-red-100 hover:text-[#cc1111] transition-colors disabled:opacity-40"
                               >
                                 {unpublishing === car.id ? "..." : "Unpublish"}
                               </button>
@@ -273,6 +370,20 @@ export default function AdminCarsPage() {
                   onChange={(e) => { setSoldDate(e.target.value); setSoldError(""); }}
                   className="w-full bg-transparent border-b border-gray-300 focus:border-[#cc1111] text-gray-900 py-2 text-sm outline-none transition-colors"
                 />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400 mb-1">
+                  Payment to Partner (₱)
+                </label>
+                <input
+                  type="number"
+                  value={paymentToPartner}
+                  onChange={(e) => { setPaymentToPartner(e.target.value); setSoldError(""); }}
+                  placeholder="0"
+                  className="w-full bg-transparent border-b border-gray-300 focus:border-[#cc1111] text-gray-900 placeholder-gray-300 py-2 text-sm outline-none transition-colors"
+                />
+                {soldCar?.partnerName && <p className="text-[10px] text-gray-400 mt-1">Partner: {soldCar.partnerName}</p>}
               </div>
 
               {soldError && <p className="text-xs text-[#cc1111]">{soldError}</p>}

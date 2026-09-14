@@ -213,6 +213,17 @@ export interface Partner {
   createdAt: string;
 }
 
+export interface PartnerNotification {
+  id: string;
+  partnerId: string;
+  carId: string;
+  carTitle: string;
+  type: "published" | "sold";
+  message: string;
+  read: boolean;
+  createdAt: string;
+}
+
 export const CAR_BRANDS = [
   "Toyota", "Honda", "Mitsubishi", "Ford", "Hyundai",
   "Nissan", "Suzuki", "Isuzu", "Kia", "Mazda",
