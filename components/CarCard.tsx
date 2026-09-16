@@ -40,10 +40,10 @@ export default function CarCard({ car }: { car: Car }) {
   return (
     <Link
       href={`/cars/${car.slug}`}
-      className="group block bg-[#111] border border-[#1f1f1f] hover:border-[#cc1111]/50 transition-colors duration-300"
+      className="group block bg-white border border-[#e5e7eb] hover:border-[#cc1111]/50 shadow-sm hover:shadow-md transition-all duration-300"
     >
       {/* Photo */}
-      <div className="relative aspect-[16/10] overflow-hidden bg-[#1a1a1a]">
+      <div className="relative aspect-[16/10] overflow-hidden bg-[#f0f1f3]">
         {mainPhoto ? (
           <Image
             src={mainPhoto.url}
@@ -56,7 +56,7 @@ export default function CarCard({ car }: { car: Car }) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <span className="text-[#333] text-xs tracking-widest uppercase">No Photo</span>
+            <span className="text-[#999] text-xs tracking-widest uppercase">No Photo</span>
           </div>
         )}
 
@@ -84,7 +84,7 @@ export default function CarCard({ car }: { car: Car }) {
           <p className="font-heading text-[10px] font-semibold tracking-[0.3em] uppercase text-[#cc1111] mb-0.5">
             {car.brand}
           </p>
-          <h3 className="font-display text-white text-2xl leading-tight group-hover:text-[#cc1111] transition-colors uppercase">
+          <h3 className="font-display text-[#0a0a0a] text-2xl leading-tight group-hover:text-[#cc1111] transition-colors uppercase">
             {car.model}
           </h3>
           <p className="font-heading text-[#666] text-sm tracking-wide">{car.year} · {car.carType}</p>
@@ -102,7 +102,7 @@ export default function CarCard({ car }: { car: Car }) {
         </div>
 
         {/* Specs row */}
-        <div className="flex items-center gap-4 text-[#666] text-xs mb-4 border-t border-[#1f1f1f] pt-3">
+        <div className="flex items-center gap-4 text-[#666] text-xs mb-4 border-t border-[#e5e7eb] pt-3">
           <span className="flex items-center gap-1.5">
             <Gauge size={12} className="text-[#cc1111]" />
             {formatMileage(car.mileage)}
@@ -133,7 +133,7 @@ export default function CarCard({ car }: { car: Car }) {
         <div
           className={`font-heading w-full py-2.5 text-center text-xs font-bold tracking-widest uppercase border transition-colors duration-200 ${
             isSold
-              ? "border-[#2a2a2a] text-[#444]"
+              ? "border-[#e5e7eb] text-[#999]"
               : "border-[#cc1111] text-[#cc1111] group-hover:text-white group-hover:bg-[#cc1111]"
           }`}
         >

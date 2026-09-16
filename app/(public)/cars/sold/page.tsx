@@ -15,12 +15,12 @@ export default async function SoldCarsPage() {
   return (
     <div className="pt-16">
       {/* Header */}
-      <section className="py-16 border-b border-[#1f1f1f] bg-[#080808]">
+      <section className="py-16 border-b border-[#e5e7eb] bg-[#f4f5f7]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111] mb-2">
             Archive
           </p>
-          <h1 className="font-display text-5xl text-white uppercase tracking-tight">
+          <h1 className="font-display text-5xl text-[#0a0a0a] uppercase tracking-tight">
             Sold Units
           </h1>
           <p className="font-heading text-[#555] text-sm mt-3 max-w-md">
@@ -33,7 +33,7 @@ export default async function SoldCarsPage() {
       <section className="py-16">
         {cars.length === 0 ? (
           <div className="text-center py-24">
-            <p className="text-[#444] text-lg">No sold cars yet.</p>
+            <p className="text-[#666] text-lg">No sold cars yet.</p>
           </div>
         ) : (
           <CarGrid cars={cars} />

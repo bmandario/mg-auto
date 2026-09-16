@@ -7,7 +7,7 @@ import { ShieldCheck, ClipboardList, BadgeCheck } from "lucide-react";
 
 export default function HeroBanner() {
   return (
-    <section className="relative h-[75vh] min-h-[500px] flex items-center overflow-hidden bg-[#080808]">
+    <section className="relative h-[75vh] min-h-[500px] flex items-center overflow-hidden bg-gradient-to-br from-white via-[#f5f6f8] to-[#eef0f3]">
       {/* Background grid lines */}
       <div
         className="absolute inset-0 opacity-5"
@@ -33,14 +33,14 @@ export default function HeroBanner() {
           priority
           sizes="55vw"
         />
-        {/* Fade car into the dark left side */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#080808] via-[#080808]/60 to-transparent" />
+        {/* Fade car into the light left side */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/60 to-transparent" />
         {/* Bottom fade */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-transparent to-[#080808]/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-white/40" />
       </motion.div>
 
       {/* Red glow behind text */}
-      <div className="absolute left-1/4 top-1/2 -translate-y-1/2 w-80 h-80 bg-[#cc1111]/8 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute left-1/4 top-1/2 -translate-y-1/2 w-80 h-80 bg-[#cc1111]/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <motion.div
@@ -49,12 +49,12 @@ export default function HeroBanner() {
           transition={{ duration: 0.7 }}
           className="max-w-xl"
         >
-<h1 className="font-display text-7xl sm:text-8xl md:text-[110px] text-white leading-none mb-6 uppercase">
+<h1 className="font-display text-7xl sm:text-8xl md:text-[110px] text-[#0a0a0a] leading-none mb-6 uppercase">
             Find Your
             <br />
             <span className="text-[#cc1111]">Next Car.</span>
           </h1>
-          <p className="font-heading text-[#666] text-base sm:text-lg max-w-md mb-8 leading-relaxed">
+          <p className="font-heading text-[#555] text-base sm:text-lg max-w-md mb-8 leading-relaxed">
             Fully inspected by Master Garage, roadworthy certified pre-owned vehicles. Complete
             service history and parts transparency.
           </p>
@@ -62,13 +62,13 @@ export default function HeroBanner() {
           <div className="flex flex-wrap gap-4">
             <Link
               href="#browse"
-              className="font-heading px-8 py-3 border border-[#cc1111] text-[#cc1111] text-xs font-bold tracking-widest uppercase hover:text-white hover:bg-[#cc1111] transition-colors"
+              className="font-heading px-8 py-3 bg-[#cc1111] text-white text-xs font-bold tracking-widest uppercase hover:bg-[#991111] transition-colors"
             >
               Browse Cars
             </Link>
             <Link
               href="#inquire"
-              className="font-heading px-8 py-3 border border-[#444] text-[#888] text-xs font-bold tracking-widest uppercase hover:border-[#888] hover:text-white transition-colors"
+              className="font-heading px-8 py-3 border border-[#0a0a0a] text-[#0a0a0a] text-xs font-bold tracking-widest uppercase hover:bg-[#0a0a0a] hover:text-white transition-colors"
             >
               Get in Touch
             </Link>
@@ -87,16 +87,16 @@ export default function HeroBanner() {
             { icon: <ClipboardList size={36} strokeWidth={1.5} />, label: "Full History" },
             { icon: <BadgeCheck size={36} strokeWidth={1.5} />, label: "Roadworthy Certified" },
           ].map((s) => (
-            <div key={s.label} className="flex items-center gap-4 px-5 py-4 bg-black/60 backdrop-blur-sm rounded-xl border border-white/5">
+            <div key={s.label} className="flex items-center gap-4 px-5 py-4 bg-white/80 backdrop-blur-sm rounded-xl border border-[#e5e7eb] shadow-sm">
               <div className="text-[#cc1111] flex-shrink-0">{s.icon}</div>
-              <p className="font-heading text-xs font-semibold tracking-widest uppercase text-white/70">{s.label}</p>
+              <p className="font-heading text-xs font-semibold tracking-widest uppercase text-[#333]">{s.label}</p>
             </div>
           ))}
         </motion.div>
       </div>
 
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
     </section>
   );
 }

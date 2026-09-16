@@ -135,7 +135,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
   ];
 
   return (
-    <div className="pt-16 bg-[#0a0a0a] min-h-screen">
+    <div className="pt-16 bg-white min-h-screen">
       {/* HERO */}
       <section className="relative h-[70vh] min-h-[500px] flex items-end overflow-hidden bg-[#050505]">
         {activePhotoUrl ? (
@@ -190,7 +190,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
 
       {/* PHOTO GALLERY */}
       {photos.length > 1 && (
-        <section className="bg-[#080808] border-b border-[#1f1f1f]">
+        <section className="bg-white border-b border-[#e5e7eb]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex gap-2 overflow-x-auto pb-2">
               {photos.map((photo, i) => (
@@ -216,7 +216,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
       )}
 
       {/* KEY STATS — Car 1 style */}
-      <section className="relative bg-[#080808] py-16 overflow-hidden border-b border-[#1f1f1f]">
+      <section className="relative bg-[#f4f5f7] py-16 overflow-hidden border-b border-[#e5e7eb]">
         <div className="absolute inset-0 opacity-5"
           style={{ backgroundImage: "linear-gradient(#cc1111 1px, transparent 1px), linear-gradient(90deg, #cc1111 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -234,9 +234,9 @@ export default function CarDetailClient({ car }: { car: Car }) {
                 viewport={{ once: true }}
                 className="group"
               >
-                <p className="font-display text-4xl sm:text-6xl text-white leading-none">
+                <p className="font-display text-4xl sm:text-6xl text-[#0a0a0a] leading-none">
                   {s.value}
-                  {s.unit && <span className="text-xl text-white/40 ml-1">{s.unit}</span>}
+                  {s.unit && <span className="text-xl text-[#0a0a0a]/40 ml-1">{s.unit}</span>}
                 </p>
                 <p className="font-heading text-[10px] font-semibold tracking-widest uppercase text-[#555] mt-2">
                   {s.label}
@@ -248,7 +248,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
       </section>
 
       {/* ABOUT + SPECS — split layout */}
-      <section className="py-20 border-b border-[#1f1f1f]">
+      <section className="py-20 border-b border-[#e5e7eb]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Car photo bleeding */}
@@ -267,7 +267,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
                   sizes="(max-width: 1024px) 100vw, 50vw"
                 />
               )}
-              <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#0a0a0a] to-transparent" />
+              <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent" />
             </motion.div>
 
             {/* About text */}
@@ -279,7 +279,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
               <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111] mb-3">
                 About This Car
               </p>
-              <h3 className="font-display text-4xl sm:text-5xl font-black text-white uppercase tracking-tight leading-none mb-4">
+              <h3 className="font-display text-4xl sm:text-5xl font-black text-[#0a0a0a] uppercase tracking-tight leading-none mb-4">
                 {car.brand} {car.model},<br />
                 {car.year}
               </h3>
@@ -301,7 +301,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
       </section>
 
       {/* TECH SPECS — Car 2 style */}
-      <section className="py-20 border-b border-[#1f1f1f] overflow-hidden">
+      <section className="py-20 border-b border-[#e5e7eb] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 items-center">
             {/* Specs table */}
@@ -313,14 +313,14 @@ export default function CarDetailClient({ car }: { car: Car }) {
               <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111] mb-2">
                 Tech Specs
               </p>
-              <h3 className="font-heading text-4xl font-bold text-white uppercase tracking-[0.2em] mb-8">
+              <h3 className="font-heading text-4xl font-bold text-[#0a0a0a] uppercase tracking-[0.2em] mb-8">
                 Specifications
               </h3>
               <div className="space-y-0">
                 {specs.map((s) => (
                   <div key={s.label} className="flex justify-between items-center py-3 border-b border-[#cc1111]/20">
                     <span className="text-[#555] text-sm">{s.label}</span>
-                    <span className="text-white font-semibold text-sm text-right">{s.value || "—"}</span>
+                    <span className="text-[#0a0a0a] font-semibold text-sm text-right">{s.value || "—"}</span>
                   </div>
                 ))}
               </div>
@@ -342,17 +342,17 @@ export default function CarDetailClient({ car }: { car: Car }) {
                   sizes="50vw"
                 />
               ) : null}
-              <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#0a0a0a] to-transparent" />
+              <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent" />
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* SERVICE HISTORY + PARTS */}
-      <section className="py-20 border-b border-[#1f1f1f]">
+      <section className="py-20 border-b border-[#e5e7eb]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Tabs */}
-          <div className="flex gap-0 mb-10 border-b border-[#1f1f1f] flex-wrap">
+          <div className="flex gap-0 mb-10 border-b border-[#e5e7eb] flex-wrap">
             {(["overview", "service", "parts", "diagnosis", "financing"] as const).map((t) => (
               <button
                 key={t}
@@ -360,7 +360,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
                 className={`px-6 py-3 text-xs font-bold tracking-widest uppercase transition-colors border-b-2 -mb-px ${
                   tab === t
                     ? "border-[#cc1111] text-[#cc1111]"
-                    : "border-transparent text-[#555] hover:text-[#aaa]"
+                    : "border-transparent text-[#666] hover:text-[#0a0a0a]"
                 }`}
               >
                 {t === "overview" ? "Overview"
@@ -380,10 +380,10 @@ export default function CarDetailClient({ car }: { car: Car }) {
                 { icon: <Fuel size={20} className="text-[#cc1111]" />, label: "Fuel", value: car.fuelType },
                 { icon: <Users size={20} className="text-[#cc1111]" />, label: "Seats", value: car.seats ? `${car.seats}` : "—" },
               ].map((s) => (
-                <div key={s.label} className="bg-[#111] border border-[#1f1f1f] p-5">
+                <div key={s.label} className="bg-white border border-[#e5e7eb] shadow-sm p-5">
                   {s.icon}
                   <p className="text-[#555] text-[10px] tracking-widest uppercase mt-3 mb-1">{s.label}</p>
-                  <p className="text-white font-bold">{s.value}</p>
+                  <p className="text-[#0a0a0a] font-bold">{s.value}</p>
                 </div>
               ))}
             </div>
@@ -392,21 +392,21 @@ export default function CarDetailClient({ car }: { car: Car }) {
           {tab === "service" && (
             <div>
               {!car.serviceHistory?.length ? (
-                <p className="text-[#444] text-sm">No service records added yet.</p>
+                <p className="text-[#666] text-sm">No service records added yet.</p>
               ) : (
-                <div className="relative pl-6 border-l border-[#1f1f1f] space-y-0">
+                <div className="relative pl-6 border-l border-[#e5e7eb] space-y-0">
                   {car.serviceHistory.map((s, i) => (
                     <div key={s.id || i} className="relative pb-8">
                       {/* Red dot */}
                       <div className="absolute -left-[25px] top-0 w-3 h-3 bg-[#cc1111] rounded-full" />
-                      <div className="bg-[#111] border border-[#1f1f1f] p-5">
+                      <div className="bg-white border border-[#e5e7eb] shadow-sm p-5">
                         <div className="flex flex-wrap justify-between gap-2 mb-2">
                           <p className="text-[10px] font-bold tracking-widest uppercase text-[#cc1111]">
                             {formatDate(s.date)}
                           </p>
                           <p className="text-[10px] text-[#555]">{s.mileage?.toLocaleString("en-PH")} km</p>
                         </div>
-                        <p className="text-white font-semibold mb-1">{s.service}</p>
+                        <p className="text-[#0a0a0a] font-semibold mb-1">{s.service}</p>
                         {s.notes && <p className="text-[#555] text-sm">{s.notes}</p>}
                         {s.cost > 0 && (
                           <p className="text-[#cc1111] text-sm font-bold mt-2">
@@ -424,13 +424,13 @@ export default function CarDetailClient({ car }: { car: Car }) {
           {tab === "parts" && (
             <div>
               {!car.partsReplaced?.length ? (
-                <p className="text-[#444] text-sm">No parts replacement records added yet.</p>
+                <p className="text-[#666] text-sm">No parts replacement records added yet.</p>
               ) : (
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-[#1f1f1f]">
+                    <tr className="border-b border-[#e5e7eb]">
                       {["Part", "Brand", "Date"].map((h) => (
-                        <th key={h} className="text-left text-[10px] font-bold tracking-widest uppercase text-[#444] pb-3 pr-4">
+                        <th key={h} className="text-left text-[10px] font-bold tracking-widest uppercase text-[#666] pb-3 pr-4">
                           {h}
                         </th>
                       ))}
@@ -438,10 +438,10 @@ export default function CarDetailClient({ car }: { car: Car }) {
                   </thead>
                   <tbody>
                     {car.partsReplaced.map((p, i) => (
-                      <tr key={p.id || i} className="border-b border-[#1a1a1a]">
-                        <td className="py-3 pr-4 text-white font-medium">{p.part}</td>
-                        <td className="py-3 pr-4 text-white">{p.brand}</td>
-                        <td className="py-3 text-white">{formatDate(p.date)}</td>
+                      <tr key={p.id || i} className="border-b border-[#f0f1f3]">
+                        <td className="py-3 pr-4 text-[#0a0a0a] font-medium">{p.part}</td>
+                        <td className="py-3 pr-4 text-[#0a0a0a]">{p.brand}</td>
+                        <td className="py-3 text-[#0a0a0a]">{formatDate(p.date)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -453,15 +453,15 @@ export default function CarDetailClient({ car }: { car: Car }) {
             <div className="space-y-8">
               {/* Summary cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-[#111] border border-[#1f1f1f] p-6">
+                <div className="bg-white border border-[#e5e7eb] shadow-sm p-6">
                   <p className="text-[10px] font-bold tracking-widest uppercase text-[#cc1111] mb-2">Estimated Down Payment</p>
-                  <p className="font-display text-3xl text-white leading-none">
+                  <p className="font-display text-3xl text-[#0a0a0a] leading-none">
                     {formatPrice(financing.estimatedDownPayment)}
                   </p>
                 </div>
-                <div className="bg-[#111] border border-[#1f1f1f] p-6">
+                <div className="bg-white border border-[#e5e7eb] shadow-sm p-6">
                   <p className="text-[10px] font-bold tracking-widest uppercase text-[#cc1111] mb-2">Required Monthly Salary</p>
-                  <p className="font-display text-3xl text-white leading-none">
+                  <p className="font-display text-3xl text-[#0a0a0a] leading-none">
                     {formatPrice(financing.requiredSalary)}
                   </p>
                 </div>
@@ -474,13 +474,13 @@ export default function CarDetailClient({ car }: { car: Car }) {
                   {([12, 24, 36, 48] as const).map((mo) => {
                     const term = financing.terms.find((t) => t.months === mo);
                     return (
-                      <div key={mo} className="bg-[#111] border border-[#1f1f1f] p-5 text-center">
+                      <div key={mo} className="bg-white border border-[#e5e7eb] shadow-sm p-5 text-center">
                         <p className="font-display text-4xl text-[#cc1111] leading-none">{mo}</p>
                         <p className="text-[10px] font-bold tracking-widest uppercase text-[#555] mt-1 mb-3">months</p>
-                        <p className="font-display text-xl text-white leading-none">
+                        <p className="font-display text-xl text-[#0a0a0a] leading-none">
                           {term ? formatPrice(term.monthlyAmortization) : "—"}
                         </p>
-                        <p className="text-[10px] text-[#444] mt-1">/ month</p>
+                        <p className="text-[10px] text-[#666] mt-1">/ month</p>
                       </div>
                     );
                   })}
@@ -493,7 +493,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
                 </p>
               )}
 
-              <p className="text-[#333] text-xs">
+              <p className="text-[#666] text-xs">
                 * Figures are estimates only. Actual amounts may vary based on lender approval, credit standing, and prevailing interest rates.
               </p>
             </div>
@@ -502,22 +502,22 @@ export default function CarDetailClient({ car }: { car: Car }) {
           {tab === "diagnosis" && (
             <div>
               {!car.diagnosis ? (
-                <p className="text-[#444] text-sm">No diagnosis records available for this unit.</p>
+                <p className="text-[#666] text-sm">No diagnosis records available for this unit.</p>
               ) : (
                 <div className="space-y-6">
                   {/* Header row */}
-                  <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#1f1f1f]">
+                  <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#e5e7eb]">
                     <div className="flex flex-wrap gap-6">
                       {car.diagnosis.date && (
                         <div>
                           <p className="text-[10px] font-bold tracking-widest uppercase text-[#555] mb-1">Inspection Date</p>
-                          <p className="text-white text-sm">{formatDate(car.diagnosis.date)}</p>
+                          <p className="text-[#0a0a0a] text-sm">{formatDate(car.diagnosis.date)}</p>
                         </div>
                       )}
                       {car.diagnosis.technician && (
                         <div>
                           <p className="text-[10px] font-bold tracking-widest uppercase text-[#555] mb-1">Technician</p>
-                          <p className="text-white text-sm">{car.diagnosis.technician}</p>
+                          <p className="text-[#0a0a0a] text-sm">{car.diagnosis.technician}</p>
                         </div>
                       )}
                     </div>
@@ -562,11 +562,11 @@ export default function CarDetailClient({ car }: { car: Car }) {
                     const issues = cat.items.filter(i => i.status !== "ok").length;
                     const dotColors: Record<DiagnosisStatus, string> = { ok: "#4caf50", attention: "#e0b840", critical: "#cc1111" };
                     return (
-                      <div key={cat.category} className="border border-[#1f1f1f]">
+                      <div key={cat.category} className="border border-[#e5e7eb]">
                         {/* Category heading */}
-                        <div className="flex items-center justify-between px-5 py-3 bg-[#0d0d0d]">
+                        <div className="flex items-center justify-between px-5 py-3 bg-[#f4f5f7]">
                           <div className="flex items-center gap-3">
-                            <span className="text-xs font-bold tracking-[0.3em] uppercase text-white">{cat.category}</span>
+                            <span className="text-xs font-bold tracking-[0.3em] uppercase text-[#0a0a0a]">{cat.category}</span>
                             {issues > 0 && (
                               <span className="text-[9px] font-bold tracking-wider px-2 py-0.5 border border-[#e0b840]/40 text-[#e0b840]">
                                 {issues} issue{issues > 1 ? "s" : ""}
@@ -581,7 +581,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
                         </div>
 
                         {/* Items */}
-                        <div className="divide-y divide-[#1a1a1a]">
+                        <div className="divide-y divide-[#f0f1f3]">
                           {cat.items.map((item, ii) => {
                             const statusCfg: Record<DiagnosisStatus, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
                               ok:        { label: "OK",        color: "#4caf50", bg: "#4caf5018", icon: <CheckCircle size={12} /> },
@@ -592,7 +592,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
                             return (
                               <div key={ii} className="px-5 py-3 flex items-start justify-between gap-4">
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-sm text-white">{item.name}</p>
+                                  <p className="text-sm text-[#0a0a0a]">{item.name}</p>
                                   {item.notes && <p className="text-[#555] text-xs mt-0.5">{item.notes}</p>}
                                 </div>
                                 <div className="flex items-center gap-1 px-2.5 py-1 text-[9px] font-bold tracking-wider uppercase flex-shrink-0"
@@ -612,7 +612,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
                   {car.diagnosis.notes && (
                     <div className="border-l-2 border-[#cc1111]/30 pl-4">
                       <p className="text-[10px] font-bold tracking-widest uppercase text-[#555] mb-1">Diagnosis Notes</p>
-                      <p className="text-[#888] text-sm">{car.diagnosis.notes}</p>
+                      <p className="text-[#555] text-sm">{car.diagnosis.notes}</p>
                     </div>
                   )}
                 </div>
@@ -623,7 +623,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
       </section>
 
       {/* INQUIRE — Car 1 style */}
-      <section id="inquire" className="relative py-24 overflow-hidden bg-[#080808]">
+      <section id="inquire" className="relative py-24 overflow-hidden bg-[#f4f5f7]">
         <div className="absolute inset-0 opacity-5"
           style={{ backgroundImage: "linear-gradient(#cc1111 1px, transparent 1px), linear-gradient(90deg, #cc1111 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#cc1111]/5 rounded-full blur-3xl pointer-events-none" />
@@ -632,7 +632,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
           <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111] mb-3">
             Interested?
           </p>
-          <h3 className="font-display text-5xl sm:text-6xl font-black text-white uppercase tracking-tight mb-2">
+          <h3 className="font-display text-5xl sm:text-6xl font-black text-[#0a0a0a] uppercase tracking-tight mb-2">
             Ask About
           </h3>
           <h3 className="font-display text-5xl sm:text-6xl font-black text-[#cc1111] uppercase tracking-tight mb-8">
@@ -652,7 +652,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
                   <input
                     {...register("name")}
                     placeholder="Your Name *"
-                    className="w-full bg-transparent border-b border-[#333] focus:border-[#cc1111] text-white placeholder-[#444] py-3 text-sm outline-none transition-colors"
+                    className="w-full bg-transparent border-b border-[#d1d5db] focus:border-[#cc1111] text-[#0a0a0a] placeholder-[#999] py-3 text-sm outline-none transition-colors"
                   />
                   {errors.name && <p className="text-[#cc1111] text-xs mt-1">{errors.name.message}</p>}
                 </div>
@@ -660,7 +660,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
                   <input
                     {...register("email")}
                     placeholder="Email Address *"
-                    className="w-full bg-transparent border-b border-[#333] focus:border-[#cc1111] text-white placeholder-[#444] py-3 text-sm outline-none transition-colors"
+                    className="w-full bg-transparent border-b border-[#d1d5db] focus:border-[#cc1111] text-[#0a0a0a] placeholder-[#999] py-3 text-sm outline-none transition-colors"
                   />
                   {errors.email && <p className="text-[#cc1111] text-xs mt-1">{errors.email.message}</p>}
                 </div>
@@ -669,7 +669,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
                 <input
                   {...register("phone")}
                   placeholder="Phone Number *"
-                  className="w-full bg-transparent border-b border-[#333] focus:border-[#cc1111] text-white placeholder-[#444] py-3 text-sm outline-none transition-colors"
+                  className="w-full bg-transparent border-b border-[#d1d5db] focus:border-[#cc1111] text-[#0a0a0a] placeholder-[#999] py-3 text-sm outline-none transition-colors"
                 />
                 {errors.phone && <p className="text-[#cc1111] text-xs mt-1">{errors.phone.message}</p>}
               </div>
@@ -678,7 +678,7 @@ export default function CarDetailClient({ car }: { car: Car }) {
                   {...register("message")}
                   placeholder="Your Message *"
                   rows={3}
-                  className="w-full bg-transparent border-b border-[#333] focus:border-[#cc1111] text-white placeholder-[#444] py-3 text-sm outline-none transition-colors resize-none"
+                  className="w-full bg-transparent border-b border-[#d1d5db] focus:border-[#cc1111] text-[#0a0a0a] placeholder-[#999] py-3 text-sm outline-none transition-colors resize-none"
                 />
                 {errors.message && <p className="text-[#cc1111] text-xs mt-1">{errors.message.message}</p>}
               </div>

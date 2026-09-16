@@ -40,12 +40,12 @@ export default async function HomePage() {
 
       {/* Most Viewed */}
       {mostViewed.length > 0 && (
-        <section className="py-16 border-b border-[#1f1f1f]">
+        <section className="py-16 border-b border-[#e5e7eb]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
             <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111] mb-1">
               Trending
             </p>
-            <h2 className="font-heading text-3xl font-bold text-white tracking-[0.2em] uppercase">
+            <h2 className="font-heading text-3xl font-bold text-[#0a0a0a] tracking-[0.2em] uppercase">
               Most Viewed
             </h2>
           </div>
@@ -54,12 +54,12 @@ export default async function HomePage() {
       )}
 
       {/* Available Cars */}
-      <section className="py-16" id="browse">
+      <section className="py-16 bg-[#f4f5f7]" id="browse">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
           <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111] mb-1">
             Available Now
           </p>
-          <h2 className="font-heading text-3xl font-bold text-white tracking-[0.2em] uppercase">
+          <h2 className="font-heading text-3xl font-bold text-[#0a0a0a] tracking-[0.2em] uppercase">
             Available Units For Sale
           </h2>
         </div>

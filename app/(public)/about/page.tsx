@@ -5,8 +5,8 @@ export const metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="pt-16 bg-[#0a0a0a] min-h-screen">
-      <section className="relative py-24 border-b border-[#1f1f1f] overflow-hidden bg-[#080808]">
+    <div className="pt-16 bg-white min-h-screen">
+      <section className="relative py-24 border-b border-[#e5e7eb] overflow-hidden bg-[#f4f5f7]">
         <div
           className="absolute inset-0 opacity-5"
           style={{
@@ -19,7 +19,7 @@ export default function AboutPage() {
           <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111] mb-3">
             Coming Soon
           </p>
-          <h1 className="font-display text-6xl sm:text-8xl text-white uppercase tracking-tight leading-none mb-6">
+          <h1 className="font-display text-6xl sm:text-8xl text-[#0a0a0a] uppercase tracking-tight leading-none mb-6">
             About Us
           </h1>
           <p className="font-heading text-[#555] text-lg max-w-xl mx-auto leading-relaxed">
