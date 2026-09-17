@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getCars } from "@/lib/cars";
+import { getCarsByPartnerId } from "@/lib/cars";
 import { Car } from "@/lib/types";
 import { usePartner } from "../layout";
 
@@ -27,8 +27,8 @@ export default function PartnerUnitsPage() {
   const [filter, setFilter] = useState<FilterTab>("all");
 
   useEffect(() => {
-    getCars()
-      .then((all) => setCars(all.filter((c) => c.partnerId === partner.id)))
+    getCarsByPartnerId(partner.id)
+      .then((all) => setCars(all))
       .finally(() => setLoading(false));
   }, [partner.id]);
 
@@ -49,8 +49,8 @@ export default function PartnerUnitsPage() {
           <button
             key={tab}
             onClick={() => setFilter(tab)}
-            className={`px-5 py-3 text-[10px] font-bold tracking-[0.3em] uppercase transition-colors border-b-2 -mb-px ${
-              filter === tab ? "border-[#cc1111] text-[#cc1111]" : "border-transparent text-gray-400 hover:text-gray-700"
+            className={`px-5 py-3 text-xs font-semibold tracking-wide capitalize transition-colors border-b-2 -mb-px ${
+              filter === tab ? "border-[#cc1111] text-[#cc1111]" : "border-transparent text-gray-500 hover:text-gray-800"
             }`}
           >
             {tab} ({tabCount(tab)})
@@ -109,7 +109,7 @@ export default function PartnerUnitsPage() {
                       <td className="px-5 py-3">
                         <Link
                           href={`/partner/units/${car.id}`}
-                          className="bg-blue-600 text-white px-3 py-1 text-[9px] font-bold tracking-[0.15em] uppercase hover:bg-blue-700 transition-colors"
+                          className="bg-gray-100 text-gray-500 px-2.5 py-1 text-[9px] font-bold tracking-[0.15em] uppercase hover:bg-red-100 hover:text-[#cc1111] transition-colors"
                         >
                           View
                         </Link>

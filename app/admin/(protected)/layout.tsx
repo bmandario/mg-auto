@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, signOut as firebaseSignOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { signOut } from "@/lib/auth";
+import { isAdmin } from "@/lib/admins";
 import {
   LayoutDashboard,
   Car,
@@ -28,11 +29,19 @@ export default function AdminProtectedLayout({ children }: { children: React.Rea
   const pathname = usePathname();
   const [authChecked, setAuthChecked] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        const adminAccess = await isAdmin(user.uid);
+        if (!adminAccess) {
+          await firebaseSignOut(auth);
+          router.push("/admin");
+          return;
+        }
         setAuthenticated(true);
+        setUserEmail(user.email);
       } else {
         router.push("/admin");
       }
@@ -69,6 +78,14 @@ export default function AdminProtectedLayout({ children }: { children: React.Rea
             Admin
           </p>
         </div>
+
+        {/* Logged in user */}
+        {userEmail && (
+          <div className="px-6 py-4 border-b border-[#1f1f1f]">
+            <p className="text-[9px] font-bold tracking-[0.3em] uppercase text-gray-600 mb-0.5">Logged in as</p>
+            <p className="text-sm font-semibold text-white truncate">{userEmail}</p>
+          </div>
+        )}
 
         {/* Nav */}
         <nav className="flex-1 py-4 overflow-y-auto">

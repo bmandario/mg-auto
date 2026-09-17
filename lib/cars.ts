@@ -91,3 +91,9 @@ export async function getCarById(id: string): Promise<Car | null> {
   if (!snap.exists()) return null;
   return { id: snap.id, ...snap.data() } as Car;
 }
+
+export async function getCarsByPartnerId(partnerId: string): Promise<Car[]> {
+  const q = query(collection(db, COLLECTION), where("partnerId", "==", partnerId));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Car));
+}

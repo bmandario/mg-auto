@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Search } from "lucide-react";
 
 const links = [
   { label: "Available Units", href: "/#browse" },
@@ -25,16 +25,19 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-[#0a0a0a]/95 backdrop-blur-md shadow-lg shadow-black/50" : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white ${
+        scrolled ? "shadow-md" : "border-b border-gray-100"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center group">
-            <span className="font-display text-white text-xl tracking-widest uppercase leading-none">
+          <Link href="/" className="flex flex-col leading-none">
+            <span className="font-display text-gray-900 text-xl tracking-widest uppercase">
               AUTO EXCHANGE
+            </span>
+            <span className="text-[9px] font-semibold tracking-[0.3em] uppercase text-[#cc1111] mt-0.5">
+              Pre-Owned Vehicles
             </span>
           </Link>
 
@@ -44,10 +47,10 @@ export default function Navbar() {
               <Link
                 key={l.href}
                 href={l.href}
-                className={`text-sm font-medium tracking-widest uppercase transition-colors duration-200 ${
+                className={`text-[11px] font-semibold tracking-widest uppercase transition-colors duration-200 ${
                   pathname === l.href
                     ? "text-[#cc1111]"
-                    : "text-[#aaa] hover:text-white"
+                    : "text-gray-500 hover:text-gray-900"
                 }`}
               >
                 {l.label}
@@ -55,9 +58,22 @@ export default function Navbar() {
             ))}
           </nav>
 
+          {/* Right: search + CTA */}
+          <div className="hidden md:flex items-center gap-4">
+            <button className="text-gray-400 hover:text-gray-700 transition-colors">
+              <Search size={16} />
+            </button>
+            <Link
+              href="/#browse"
+              className="px-5 py-2 bg-[#cc1111] text-white text-[10px] font-bold tracking-widest uppercase hover:bg-[#aa0e0e] transition-colors"
+            >
+              Browse Cars
+            </Link>
+          </div>
+
           {/* Mobile toggle */}
           <button
-            className="md:hidden text-white p-2"
+            className="md:hidden text-gray-700 p-2"
             onClick={() => setOpen(!open)}
           >
             {open ? <X size={20} /> : <Menu size={20} />}
@@ -66,17 +82,26 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {open && (
-          <div className="md:hidden bg-[#111] border-t border-[#1f1f1f] py-4">
+          <div className="md:hidden bg-white border-t border-gray-100 py-4">
             {links.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="block px-4 py-3 text-sm font-medium tracking-widest uppercase text-[#aaa] hover:text-white hover:bg-[#1a1a1a]"
+                className="block px-4 py-3 text-[11px] font-semibold tracking-widest uppercase text-gray-600 hover:text-[#cc1111] hover:bg-gray-50"
               >
                 {l.label}
               </Link>
             ))}
+            <div className="px-4 pt-3">
+              <Link
+                href="/#browse"
+                onClick={() => setOpen(false)}
+                className="block text-center px-5 py-2.5 bg-[#cc1111] text-white text-[10px] font-bold tracking-widest uppercase"
+              >
+                Browse Cars
+              </Link>
+            </div>
           </div>
         )}
       </div>

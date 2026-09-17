@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import CarForm from "@/components/admin/CarForm";
 import { addCar } from "@/lib/cars";
+import { addNotification } from "@/lib/notifications";
 
 function generateSlug(brand: string, model: string, year: number | string): string {
   return `${brand}-${model}-${year}`
@@ -30,6 +31,9 @@ export default function NewCarPage() {
         updatedAt: new Date().toISOString(),
         ...(data.status === "published" ? { publishedAt: new Date().toISOString() } : {}),
       });
+      if (data.partnerId) {
+        await addNotification(data.partnerId, "tagged", id, `${data.brand} ${data.model}`, `A new unit has been tagged to you: ${data.brand} ${data.model} (${data.year}).`);
+      }
       router.push(`/admin/cars/${id}/edit`);
     } catch (err) {
       console.error(err);

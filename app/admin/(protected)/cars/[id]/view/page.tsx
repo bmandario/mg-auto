@@ -22,11 +22,13 @@ const STATUS_COLORS: Record<string, { bg: string; text: string; border: string }
 
 function fmt(iso?: string) {
   if (!iso) return "—";
-  return new Date(iso).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" });
+  const d = new Date(iso);
+  return `${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}/${d.getFullYear()}`;
 }
 function fmtTime(iso?: string) {
   if (!iso) return "—";
-  return new Date(iso).toLocaleString("en-PH", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
+  const d = new Date(iso);
+  return `${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}/${d.getFullYear()} ${d.toLocaleTimeString("en-PH", { hour: "numeric", minute: "2-digit" })}`;
 }
 
 // Build timeline from fields + activityLog
@@ -169,29 +171,22 @@ export default function CarViewPage() {
         {/* LEFT — photo + specs */}
         <div className="lg:col-span-2 space-y-6">
 
-          {/* Photo */}
-          {mainPhoto && (
+          {/* Photos */}
+          {car.photos?.length > 0 && (
             <div className="bg-white border border-gray-200 overflow-hidden">
-              <button
-                onClick={() => setLightboxIndex(car.photos.findIndex((p) => p.isMain) ?? 0)}
-                className="relative block w-full h-64 sm:h-80 cursor-zoom-in overflow-hidden"
-              >
-                <Image src={mainPhoto.url} alt={`${car.brand} ${car.model}`} fill className="object-cover hover:scale-105 transition-transform duration-300" sizes="(max-width: 1024px) 100vw, 66vw" />
-              </button>
-              {car.photos && car.photos.length > 1 && (
-                <div className="flex gap-2 p-3 overflow-x-auto">
+              <div className="flex gap-3 p-3 overflow-x-auto">
                   {car.photos.map((p, i) => (
                     <button
                       key={i}
                       onClick={() => setLightboxIndex(i)}
-                      className="relative shrink-0 w-16 h-12 overflow-hidden border border-gray-200 cursor-zoom-in hover:border-[#cc1111] transition-colors"
+                      className="relative shrink-0 w-56 h-40 overflow-hidden border border-gray-200 cursor-zoom-in hover:border-[#cc1111] transition-colors"
                     >
-                      <Image src={p.url} alt="" fill className="object-cover" sizes="64px" />
-                      {p.isMain && <span className="absolute top-0 left-0 bg-[#cc1111] text-white text-[7px] font-bold px-1">MAIN</span>}
+                      <Image src={p.url} alt={`${car.brand} ${car.model} ${i + 1}`} fill className="object-cover hover:scale-105 transition-transform duration-300" sizes="224px" />
+                      {p.isMain && <span className="absolute top-1 left-1 bg-[#cc1111] text-white text-[7px] font-bold px-1.5 py-0.5">MAIN</span>}
                     </button>
                   ))}
-                </div>
-              )}
+              </div>
+              <p className="px-3 pb-2 text-[10px] text-gray-400">{car.photos.length} photo{car.photos.length !== 1 ? "s" : ""} · scroll to view all</p>
             </div>
           )}
 

@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "@/lib/auth";
+import { isAdmin } from "@/lib/admins";
+import { signOut } from "@/lib/auth";
 
 const schema = z.object({
   email: z.string().email("Invalid email address"),
@@ -15,7 +17,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const INPUT_CLASS =
-  "w-full bg-transparent border-b border-[#333] focus:border-[#cc1111] text-white placeholder-[#444] py-2 text-sm outline-none transition-colors";
+  "w-full bg-transparent border-b border-[#ddd] focus:border-[#cc1111] text-[#111] placeholder-[#bbb] py-2.5 text-sm font-sans font-medium outline-none transition-colors";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -32,7 +34,13 @@ export default function AdminLoginPage() {
     setServerError("");
     setLoading(true);
     try {
-      await signIn(data.email, data.password);
+      const cred = await signIn(data.email, data.password);
+      const adminAccess = await isAdmin(cred.user.uid);
+      if (!adminAccess) {
+        await signOut();
+        setServerError("Access denied. This account is not authorized as an admin.");
+        return;
+      }
       router.push("/admin/dashboard");
     } catch (err: any) {
       if (
@@ -50,22 +58,22 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-10">
-          <h1 className="font-display text-5xl text-white tracking-widest mb-1">AUTO EXCHANGE</h1>
+          <h1 className="font-display text-5xl text-[#111] tracking-widest mb-1">AUTO EXCHANGE</h1>
           <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111]">
             Admin Portal
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-[#111] border border-[#1f1f1f] p-8">
+        <div className="bg-white border border-[#e5e5e5] shadow-sm p-8">
           <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
             {/* Email */}
             <div>
-              <label className="block text-[10px] font-bold tracking-[0.3em] uppercase text-[#555] mb-2">
+              <label className="block text-xs font-semibold tracking-widest uppercase text-[#888] mb-2">
                 Email
               </label>
               <input
@@ -82,7 +90,7 @@ export default function AdminLoginPage() {
 
             {/* Password */}
             <div>
-              <label className="block text-[10px] font-bold tracking-[0.3em] uppercase text-[#555] mb-2">
+              <label className="block text-xs font-semibold tracking-widest uppercase text-[#888] mb-2">
                 Password
               </label>
               <input

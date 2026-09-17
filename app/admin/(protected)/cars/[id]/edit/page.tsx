@@ -41,6 +41,7 @@ export default function EditCarPage() {
   const handleSubmit = async (data: any) => {
     setIsLoading(true);
     const isFirstPublish = data.status === "published" && !car?.publishedAt;
+    const partnerChanged = data.partnerId && data.partnerId !== car?.partnerId;
     try {
       await updateCar(id, {
         ...data,
@@ -49,9 +50,12 @@ export default function EditCarPage() {
       });
       if (isFirstPublish) {
         await logCarActivity(id, "Published to public listing");
-        if (car?.partnerId) {
-          await addNotification(car.partnerId, "published", id, `${car.brand} ${car.model}`, `Your unit ${car.brand} ${car.model} is now live on the public listing.`);
+        if (data.partnerId) {
+          await addNotification(data.partnerId, "published", id, `${data.brand} ${data.model}`, `Your unit ${data.brand} ${data.model} is now live on the public listing.`);
         }
+      }
+      if (partnerChanged) {
+        await addNotification(data.partnerId, "tagged", id, `${data.brand} ${data.model}`, `A unit has been tagged to you: ${data.brand} ${data.model} (${data.year}).`);
       }
       router.push("/admin/cars");
     } catch (err) {

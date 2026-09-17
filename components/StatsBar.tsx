@@ -26,17 +26,17 @@ export default function StatsBar({ availableUnits, soldCars, totalViews }: Props
   ];
 
   return (
-    <section className="border-y border-[#1f1f1f] bg-[#0d0d0d]">
+    <section className="border-y border-gray-200 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-3 divide-x divide-[#1f1f1f]">
+        <div className="grid grid-cols-3 divide-x divide-gray-200">
           {stats.map((s) => (
             <div key={s.label} className="flex flex-col sm:flex-row items-center justify-center gap-4 py-8 px-4">
               <div className="text-[#cc1111]">{s.icon}</div>
               <div className="text-center sm:text-left">
-                <p className="font-display text-4xl sm:text-5xl text-white leading-none">
+                <p className="font-display text-4xl sm:text-5xl text-gray-900 leading-none">
                   {s.value}
                 </p>
-                <p className="font-heading text-[10px] font-semibold tracking-widest uppercase text-[#555] mt-1">
+                <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400 mt-1">
                   {s.label}
                 </p>
               </div>

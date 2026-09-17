@@ -5,7 +5,6 @@ import {
   updateDoc,
   query,
   where,
-  orderBy,
   doc,
   writeBatch,
 } from "firebase/firestore";
@@ -16,7 +15,7 @@ const COLLECTION = "notifications";
 
 export async function addNotification(
   partnerId: string,
-  type: "published" | "sold",
+  type: "published" | "sold" | "tagged",
   carId: string,
   carTitle: string,
   message: string
@@ -37,11 +36,11 @@ export async function getNotificationsForPartner(
 ): Promise<PartnerNotification[]> {
   const q = query(
     collection(db, COLLECTION),
-    where("partnerId", "==", partnerId),
-    orderBy("createdAt", "desc")
+    where("partnerId", "==", partnerId)
   );
   const snap = await getDocs(q);
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as PartnerNotification));
+  const results = snap.docs.map((d) => ({ id: d.id, ...d.data() } as PartnerNotification));
+  return results.sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
 }
 
 export async function markAllNotificationsRead(partnerId: string): Promise<void> {

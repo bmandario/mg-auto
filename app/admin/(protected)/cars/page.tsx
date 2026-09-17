@@ -219,10 +219,10 @@ export default function AdminCarsPage() {
           <button
             key={tab}
             onClick={() => setFilter(tab)}
-            className={`px-5 py-3 text-[10px] font-bold tracking-[0.3em] uppercase transition-colors border-b-2 -mb-px ${
+            className={`px-5 py-3 text-xs font-semibold tracking-wide capitalize transition-colors border-b-2 -mb-px ${
               filter === tab
                 ? "border-[#cc1111] text-[#cc1111]"
-                : "border-transparent text-gray-400 hover:text-gray-700"
+                : "border-transparent text-gray-500 hover:text-gray-800"
             }`}
           >
             {tab} ({tabCount(tab)})

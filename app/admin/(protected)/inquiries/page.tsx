@@ -182,11 +182,7 @@ export default function InquiriesPage() {
                       <span className="line-clamp-2">{inq.message}</span>
                     </td>
                     <td className="px-5 py-4 text-sm text-gray-500 whitespace-nowrap">
-                      {new Date(inq.createdAt).toLocaleDateString("en-PH", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      {(() => { const d = new Date(inq.createdAt); return `${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}/${d.getFullYear()}`; })()}
                     </td>
                     <td className="px-5 py-4">
                       <span

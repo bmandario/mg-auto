@@ -39,10 +39,10 @@ export default function PartnerLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <h1 className="font-display text-4xl text-white tracking-widest leading-none mb-2">
+          <h1 className="font-display text-4xl text-[#111] tracking-widest leading-none mb-2">
             AUTO EXCHANGE
           </h1>
           <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111]">
@@ -50,9 +50,10 @@ export default function PartnerLoginPage() {
           </p>
         </div>
 
+        <div className="bg-white border border-[#e5e5e5] shadow-sm p-8">
         <form onSubmit={handleLogin} className="space-y-5">
           <div>
-            <label className="block text-[9px] font-bold tracking-[0.3em] uppercase text-gray-500 mb-2">
+            <label className="block text-xs font-semibold tracking-widest uppercase text-[#888] mb-2">
               Email Address
             </label>
             <input
@@ -60,13 +61,13 @@ export default function PartnerLoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full bg-transparent border-b border-[#2a2a2a] focus:border-[#cc1111] text-white placeholder-gray-600 py-2 text-sm outline-none transition-colors"
+              className="w-full bg-transparent border-b border-[#ddd] focus:border-[#cc1111] text-[#111] placeholder-[#bbb] py-2.5 text-sm font-sans font-medium outline-none transition-colors"
               placeholder="you@email.com"
             />
           </div>
 
           <div>
-            <label className="block text-[9px] font-bold tracking-[0.3em] uppercase text-gray-500 mb-2">
+            <label className="block text-xs font-semibold tracking-widest uppercase text-[#888] mb-2">
               Password
             </label>
             <input
@@ -74,7 +75,7 @@ export default function PartnerLoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full bg-transparent border-b border-[#2a2a2a] focus:border-[#cc1111] text-white placeholder-gray-600 py-2 text-sm outline-none transition-colors"
+              className="w-full bg-transparent border-b border-[#ddd] focus:border-[#cc1111] text-[#111] placeholder-[#bbb] py-2.5 text-sm font-sans font-medium outline-none transition-colors"
               placeholder="••••••••"
             />
           </div>
@@ -91,6 +92,7 @@ export default function PartnerLoginPage() {
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
+        </div>
       </div>
     </div>
   );

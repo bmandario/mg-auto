@@ -5,11 +5,12 @@ import Link from "next/link";
 import { getNotificationsForPartner, markAllNotificationsRead, markNotificationRead } from "@/lib/notifications";
 import { PartnerNotification } from "@/lib/types";
 import { usePartner } from "../layout";
-import { BadgeCheck, CircleDollarSign } from "lucide-react";
+import { BadgeCheck, CircleDollarSign, Tag } from "lucide-react";
 
 function fmtTime(iso?: string) {
   if (!iso) return "—";
-  return new Date(iso).toLocaleString("en-PH", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
+  const d = new Date(iso);
+  return `${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}/${d.getFullYear()} ${d.toLocaleTimeString("en-PH", { hour: "numeric", minute: "2-digit" })}`;
 }
 
 const TYPE_CONFIG = {
@@ -22,6 +23,11 @@ const TYPE_CONFIG = {
     icon: <CircleDollarSign size={16} />,
     color: "bg-green-100 text-green-600 border-green-200",
     label: "Sold",
+  },
+  tagged: {
+    icon: <Tag size={16} />,
+    color: "bg-purple-100 text-purple-600 border-purple-200",
+    label: "Tagged",
   },
 };
 

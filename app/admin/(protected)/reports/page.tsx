@@ -18,7 +18,8 @@ type FilterMode = "month" | "year" | "range";
 
 function fmt(iso?: string) {
   if (!iso) return "—";
-  return new Date(iso).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" });
+  const d = new Date(iso);
+  return `${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}/${d.getFullYear()}`;
 }
 
 function peso(n: number) {

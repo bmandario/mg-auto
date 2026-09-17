@@ -218,7 +218,7 @@ export interface PartnerNotification {
   partnerId: string;
   carId: string;
   carTitle: string;
-  type: "published" | "sold";
+  type: "published" | "sold" | "tagged";
   message: string;
   read: boolean;
   createdAt: string;

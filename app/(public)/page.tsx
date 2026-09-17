@@ -28,24 +28,26 @@ export default async function HomePage() {
     .slice(0, 5);
 
   return (
-    <div className="pt-16">
+    <div className="bg-white">
       <HeroBanner />
 
       {/* Stats Bar */}
+      <div className="mt-2">
       <StatsBar
         availableUnits={availableCars.length}
         soldCars={soldCars.length}
         totalViews={totalViews}
       />
+      </div>
 
       {/* Most Viewed */}
       {mostViewed.length > 0 && (
-        <section className="py-16 border-b border-[#1f1f1f]">
+        <section className="pt-6 pb-16 border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
             <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111] mb-1">
               Trending
             </p>
-            <h2 className="font-heading text-3xl font-bold text-white tracking-[0.2em] uppercase">
+            <h2 className="font-display text-3xl text-gray-900 tracking-[0.15em] uppercase">
               Most Viewed
             </h2>
           </div>
@@ -54,12 +56,12 @@ export default async function HomePage() {
       )}
 
       {/* Available Cars */}
-      <section className="py-16" id="browse">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-          <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111] mb-1">
+      <section className="pt-6 pb-16 bg-gray-50" id="browse">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
+          <p className="text-xs font-bold tracking-[0.4em] uppercase text-[#cc1111] mb-2">
             Available Now
           </p>
-          <h2 className="font-heading text-3xl font-bold text-white tracking-[0.2em] uppercase">
+          <h2 className="font-display text-5xl sm:text-6xl text-gray-900 tracking-[0.1em] uppercase">
             Available Units For Sale
           </h2>
         </div>

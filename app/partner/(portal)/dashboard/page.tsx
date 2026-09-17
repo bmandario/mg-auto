@@ -6,14 +6,16 @@ import {
   ResponsiveContainer, ComposedChart, Bar, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from "recharts";
-import { getCars } from "@/lib/cars";
+import { getCarsByPartnerId } from "@/lib/cars";
 import { getNotificationsForPartner } from "@/lib/notifications";
 import { Car, PartnerNotification } from "@/lib/types";
 import { usePartner } from "../layout";
+import { Car as CarIcon, Radio, BadgeCheck, CircleDollarSign } from "lucide-react";
 
 function fmt(iso?: string) {
   if (!iso) return "—";
-  return new Date(iso).toLocaleDateString("en-PH", { month: "short", day: "numeric", year: "numeric" });
+  const d = new Date(iso);
+  return `${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}/${d.getFullYear()}`;
 }
 function peso(n: number) {
   if (!n) return "₱0";
@@ -76,9 +78,11 @@ export default function PartnerDashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([getCars(), getNotificationsForPartner(partner.id)])
+    Promise.all([getCarsByPartnerId(partner.id), getNotificationsForPartner(partner.id)])
       .then(([allCars, notifs]) => {
-        setCars(allCars.filter((c) => c.partnerId === partner.id));
+        console.log("partner.id:", partner.id);
+        console.log("cars returned:", allCars.length, allCars.map(c => ({ id: c.id, partnerId: c.partnerId })));
+        setCars(allCars);
         setNotifications(notifs.slice(0, 5));
       })
       .finally(() => setLoading(false));
@@ -86,7 +90,7 @@ export default function PartnerDashboardPage() {
 
   const published  = cars.filter((c) => c.status === "published");
   const sold       = cars.filter((c) => c.status === "sold");
-  const totalEarned    = sold.reduce((s, c) => s + (c.paymentToPartner || 0), 0);
+  const totalSoldValue = sold.reduce((s, c) => s + (c.soldPrice || c.sellingPrice || 0), 0);
   const pendingPayment = sold.filter((c) => !c.paymentToPartner).length;
 
   // This month
@@ -111,23 +115,28 @@ export default function PartnerDashboardPage() {
         <div className="space-y-6">
 
           {/* All-time KPIs */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white border border-gray-200 p-6">
-              <p className="text-[9px] font-bold tracking-[0.3em] uppercase text-gray-400 mb-3">Total Units</p>
-              <p className="text-3xl font-bold text-gray-900">{cars.length}</p>
-            </div>
-            <div className="bg-white border border-gray-200 p-6">
-              <p className="text-[9px] font-bold tracking-[0.3em] uppercase text-gray-400 mb-3">Live Listings</p>
-              <p className="text-3xl font-bold text-gray-900">{published.length}</p>
-            </div>
-            <div className="bg-white border border-gray-200 p-6">
-              <p className="text-[9px] font-bold tracking-[0.3em] uppercase text-gray-400 mb-3">Units Sold</p>
-              <p className="text-3xl font-bold text-gray-900">{sold.length}</p>
-            </div>
-            <div className="bg-white border border-green-200 p-6">
-              <p className="text-[9px] font-bold tracking-[0.3em] uppercase text-gray-400 mb-3">Total Earnings</p>
-              <p className="text-2xl font-bold text-green-700">{peso(totalEarned)}</p>
-            </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            {[
+              { label: "Total Units", value: String(cars.length), sub: "All tagged units", icon: CarIcon, accent: "#cc1111" },
+              { label: "Live Listings", value: String(published.length), sub: "Currently published", icon: Radio, accent: "#3b82f6" },
+              { label: "Units Sold", value: String(sold.length), sub: "Moved units", icon: BadgeCheck, accent: "#22c55e" },
+              { label: "Total Sold Value", value: peso(totalSoldValue), sub: "Combined sold price", icon: CircleDollarSign, accent: "#22c55e" },
+            ].map(({ label, value, sub, icon: Icon, accent }) => (
+              <div
+                key={label}
+                className="bg-white border border-gray-200 px-6 py-5 flex items-center gap-4"
+                style={{ borderLeftColor: accent, borderLeftWidth: 3 }}
+              >
+                <div className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: accent + "18" }}>
+                  <Icon size={18} style={{ color: accent }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[9px] font-bold tracking-[0.3em] uppercase text-gray-400 mb-1">{label}</p>
+                  <p className="font-display text-3xl text-gray-900 leading-none truncate">{value}</p>
+                  <p className="text-[10px] text-gray-400 mt-1 tracking-wide">{sub}</p>
+                </div>
+              </div>
+            ))}
           </div>
 
           {/* Monthly Activity Chart */}
@@ -188,41 +197,35 @@ export default function PartnerDashboardPage() {
                 />
                 <Bar yAxisId="count" dataKey="listings" fill="#3b82f6" radius={[2, 2, 0, 0]} maxBarSize={20} />
                 <Bar yAxisId="count" dataKey="sold" fill="#d1d5db" radius={[2, 2, 0, 0]} maxBarSize={20} />
-                <Line yAxisId="revenue" type="monotone" dataKey="revenue" stroke="#cc1111" strokeWidth={2} dot={{ r: 3, fill: "#cc1111" }} activeDot={{ r: 5 }} />
+                <Line yAxisId="revenue" type="monotone" dataKey="revenue" stroke="#22c55e" strokeWidth={2} dot={{ r: 3, fill: "#22c55e" }} activeDot={{ r: 5 }} />
               </ComposedChart>
             </ResponsiveContainer>
           </div>
 
-          {pendingPayment > 0 && (
-            <div className="bg-amber-50 border border-amber-200 px-5 py-3 flex items-center gap-3">
-              <span className="text-amber-600 font-bold text-sm">⚠</span>
-              <p className="text-sm text-amber-700">
-                <span className="font-semibold">{pendingPayment} sold unit{pendingPayment > 1 ? "s" : ""}</span>{" "}
-                {pendingPayment > 1 ? "have" : "has"} no payment recorded yet. Contact your coordinator.
-              </p>
-            </div>
-          )}
 
           <div className="grid grid-cols-2 gap-6">
-            {/* Recent units */}
+            {/* Most Viewed units */}
             <div className="bg-white border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111]">Recent Units</p>
+                <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111]">Most Viewed</p>
                 <Link href="/partner/units" className="text-[10px] font-bold tracking-widest uppercase text-gray-400 hover:text-gray-700 transition-colors">View All →</Link>
               </div>
               {cars.length === 0 ? (
                 <p className="text-sm text-gray-400">No units yet.</p>
               ) : (
                 <div className="space-y-3">
-                  {cars.slice(0, 5).map((c) => (
+                  {[...cars].sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0)).slice(0, 5).map((c) => (
                     <div key={c.id} className="flex items-center justify-between gap-3 py-2 border-b border-gray-50 last:border-0">
                       <div>
                         <p className="text-sm font-semibold text-gray-900">{c.brand} {c.model}</p>
                         <p className="text-xs text-gray-400">{c.year} · {peso(c.sellingPrice || 0)}</p>
                       </div>
-                      <span className={`text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 border shrink-0 ${STATUS_BADGE[c.status] ?? STATUS_BADGE.draft}`}>
-                        {c.status}
-                      </span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-xs font-bold text-gray-500">{(c.viewCount || 0).toLocaleString()} views</span>
+                        <span className={`text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 border ${STATUS_BADGE[c.status] ?? STATUS_BADGE.draft}`}>
+                          {c.status}
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -241,7 +244,7 @@ export default function PartnerDashboardPage() {
                 <div className="space-y-3">
                   {notifications.map((n) => (
                     <div key={n.id} className={`flex items-start gap-3 py-2 border-b border-gray-50 last:border-0 ${!n.read ? "opacity-100" : "opacity-60"}`}>
-                      <span className={`mt-0.5 shrink-0 w-2 h-2 rounded-full ${n.type === "sold" ? "bg-green-500" : "bg-blue-500"} ${!n.read ? "" : "opacity-0"}`} />
+                      <span className={`mt-0.5 shrink-0 w-2 h-2 rounded-full ${n.type === "sold" ? "bg-green-500" : n.type === "tagged" ? "bg-purple-500" : "bg-blue-500"} ${!n.read ? "" : "opacity-0"}`} />
                       <div>
                         <p className="text-sm text-gray-800">{n.message}</p>
                         <p className="text-[10px] text-gray-400 mt-0.5">{fmt(n.createdAt)}</p>

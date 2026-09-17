@@ -69,7 +69,7 @@ export default function CarGrid({ cars }: { cars: Car[] }) {
   return (
     <div>
       {/* Filter bar */}
-      <div className="sticky top-16 z-40 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-[#1f1f1f] py-3 mb-8">
+      <div className="sticky top-16 z-40 bg-gray-50 border-b border-gray-200 py-3 mb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 flex-wrap">
             {/* Filter toggle */}
@@ -77,8 +77,8 @@ export default function CarGrid({ cars }: { cars: Car[] }) {
               onClick={() => setShowFilters(!showFilters)}
               className={`flex items-center gap-2 px-4 py-2 text-xs font-bold tracking-widest uppercase border transition-colors ${
                 showFilters || activeFilterCount > 0
-                  ? "border-[#cc1111] text-[#cc1111] bg-[#cc1111]/10"
-                  : "border-[#2a2a2a] text-[#888] hover:border-[#cc1111] hover:text-[#cc1111]"
+                  ? "border-[#cc1111] text-[#cc1111] bg-red-50"
+                  : "border-gray-300 text-gray-500 hover:border-[#cc1111] hover:text-[#cc1111]"
               }`}
             >
               <SlidersHorizontal size={12} />
@@ -106,7 +106,7 @@ export default function CarGrid({ cars }: { cars: Car[] }) {
             {activeFilterCount > 0 && (
               <button
                 onClick={clearFilters}
-                className="text-[10px] tracking-widest uppercase text-[#555] hover:text-[#cc1111] transition-colors"
+                className="text-[10px] tracking-widest uppercase text-gray-400 hover:text-[#cc1111] transition-colors"
               >
                 Clear All
               </button>
@@ -114,36 +114,36 @@ export default function CarGrid({ cars }: { cars: Car[] }) {
 
             {/* Sort — pushed right */}
             <div className="ml-auto flex items-center gap-2">
-              <span className="text-[#555] text-xs hidden sm:block">Sort:</span>
+              <span className="text-gray-400 text-xs hidden sm:block">Sort:</span>
               <div className="relative">
                 <select
                   value={filters.sort}
                   onChange={(e) => setFilters((f) => ({ ...f, sort: e.target.value }))}
-                  className="appearance-none bg-[#111] border border-[#2a2a2a] text-[#aaa] text-xs px-3 py-2 pr-7 focus:outline-none focus:border-[#cc1111] cursor-pointer"
+                  className="appearance-none bg-gray-50 border border-gray-200 text-gray-600 text-xs px-3 py-2 pr-7 focus:outline-none focus:border-[#cc1111] cursor-pointer"
                 >
                   {SORT_OPTIONS.map((o) => (
                     <option key={o.value} value={o.value}>{o.label}</option>
                   ))}
                 </select>
-                <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#555] pointer-events-none" />
+                <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
               </div>
             </div>
           </div>
 
           {/* Expanded filter row */}
           {showFilters && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 pt-3 border-t border-[#1f1f1f]">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 pt-3 border-t border-gray-100">
               {/* Brand */}
               <div className="relative">
                 <select
                   value={filters.brand}
                   onChange={(e) => setFilters((f) => ({ ...f, brand: e.target.value }))}
-                  className="w-full appearance-none bg-[#111] border border-[#2a2a2a] text-[#aaa] text-xs px-3 py-2.5 pr-7 focus:outline-none focus:border-[#cc1111]"
+                  className="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-600 text-xs px-3 py-2.5 pr-7 focus:outline-none focus:border-[#cc1111]"
                 >
                   <option value="">All Brands</option>
                   {CAR_BRANDS.map((b) => <option key={b} value={b}>{b}</option>)}
                 </select>
-                <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#555] pointer-events-none" />
+                <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
               </div>
 
               {/* Type */}
@@ -151,12 +151,12 @@ export default function CarGrid({ cars }: { cars: Car[] }) {
                 <select
                   value={filters.carType}
                   onChange={(e) => setFilters((f) => ({ ...f, carType: e.target.value }))}
-                  className="w-full appearance-none bg-[#111] border border-[#2a2a2a] text-[#aaa] text-xs px-3 py-2.5 pr-7 focus:outline-none focus:border-[#cc1111]"
+                  className="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-600 text-xs px-3 py-2.5 pr-7 focus:outline-none focus:border-[#cc1111]"
                 >
                   <option value="">All Types</option>
                   {CAR_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                 </select>
-                <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#555] pointer-events-none" />
+                <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
               </div>
 
               {/* Price range */}
@@ -164,12 +164,12 @@ export default function CarGrid({ cars }: { cars: Car[] }) {
                 <select
                   value={filters.priceRange}
                   onChange={(e) => setFilters((f) => ({ ...f, priceRange: Number(e.target.value) }))}
-                  className="w-full appearance-none bg-[#111] border border-[#2a2a2a] text-[#aaa] text-xs px-3 py-2.5 pr-7 focus:outline-none focus:border-[#cc1111]"
+                  className="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-600 text-xs px-3 py-2.5 pr-7 focus:outline-none focus:border-[#cc1111]"
                 >
                   <option value={-1}>All Prices</option>
                   {PRICE_RANGES.map((r, i) => <option key={i} value={i}>{r.label}</option>)}
                 </select>
-                <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#555] pointer-events-none" />
+                <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
               </div>
             </div>
           )}
@@ -178,8 +178,8 @@ export default function CarGrid({ cars }: { cars: Car[] }) {
 
       {/* Results count */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-        <p className="text-[#555] text-sm">
-          <span className="text-white font-semibold">{filtered.length}</span> car{filtered.length !== 1 ? "s" : ""} found
+        <p className="text-gray-400 text-sm">
+          <span className="text-gray-900 font-semibold">{filtered.length}</span> car{filtered.length !== 1 ? "s" : ""} found
         </p>
       </div>
 
@@ -187,7 +187,7 @@ export default function CarGrid({ cars }: { cars: Car[] }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {filtered.length === 0 ? (
           <div className="text-center py-24">
-            <p className="text-[#444] text-lg mb-2">No cars match your filters.</p>
+            <p className="text-gray-400 text-lg mb-2">No cars match your filters.</p>
             <button onClick={clearFilters} className="text-[#cc1111] text-sm hover:underline">
               Clear filters
             </button>
@@ -204,7 +204,7 @@ export default function CarGrid({ cars }: { cars: Car[] }) {
               <div className="text-center mt-12">
                 <button
                   onClick={() => setPage((p) => p + 12)}
-                  className="font-heading px-10 py-3 border border-[#cc1111] text-[#cc1111] text-xs font-bold tracking-widest uppercase hover:bg-[#cc1111] hover:text-white transition-colors"
+                  className="px-10 py-3 border border-[#cc1111] text-[#cc1111] text-xs font-bold tracking-widest uppercase hover:bg-[#cc1111] hover:text-white transition-colors"
                 >
                   Load More
                 </button>
@@ -219,9 +219,9 @@ export default function CarGrid({ cars }: { cars: Car[] }) {
 
 function Tag({ label, onRemove }: { label: string; onRemove: () => void }) {
   return (
-    <span className="flex items-center gap-1.5 bg-[#cc1111]/20 border border-[#cc1111]/40 text-[#cc1111] text-[10px] font-bold tracking-widest uppercase px-2 py-1">
+    <span className="flex items-center gap-1.5 bg-red-50 border border-red-200 text-[#cc1111] text-[10px] font-bold tracking-widest uppercase px-2 py-1">
       {label}
-      <button onClick={onRemove} className="hover:text-white">
+      <button onClick={onRemove} className="hover:text-red-800">
         <X size={10} />
       </button>
     </span>
