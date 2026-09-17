@@ -118,7 +118,13 @@ export default function CarGrid({ cars, defaultShowFilters = false, columns = 3 
     priceMax: SLIDER_MAX,
     sort: "newest",
   });
-  const [showFilters, setShowFilters] = useState(defaultShowFilters);
+  const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    if (defaultShowFilters) {
+      setShowFilters(window.innerWidth >= 1024);
+    }
+  }, [defaultShowFilters]);
   const [page, setPage] = useState(12);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");

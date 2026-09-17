@@ -437,39 +437,36 @@ export default function CarDetailClient({ car, relatedCars = [] }: { car: Car; r
           )}
 
           {tab === "financing" && (
-            <div className="space-y-8">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-white border border-gray-200 p-6">
-                  <p className="text-[10px] font-bold tracking-widest uppercase text-[#cc1111] mb-2">Estimated Down Payment</p>
-                  <p className="font-display text-3xl text-gray-900 leading-none">{formatPrice(financing.estimatedDownPayment)}</p>
+            <div className="space-y-6">
+              {/* Key figures */}
+              <div className="flex gap-8 py-4 border-b border-gray-100">
+                <div>
+                  <p className="text-[10px] font-bold tracking-widest uppercase text-gray-400 mb-1">Down Payment</p>
+                  <p className="text-gray-900 font-bold text-lg">{formatPrice(financing.estimatedDownPayment)}</p>
                 </div>
-                <div className="bg-white border border-gray-200 p-6">
-                  <p className="text-[10px] font-bold tracking-widest uppercase text-[#cc1111] mb-2">Required Monthly Salary</p>
-                  <p className="font-display text-3xl text-gray-900 leading-none">{formatPrice(financing.requiredSalary)}</p>
+                <div>
+                  <p className="text-[10px] font-bold tracking-widest uppercase text-gray-400 mb-1">Min. Monthly Salary</p>
+                  <p className="text-gray-900 font-bold text-lg">{formatPrice(financing.requiredSalary)}</p>
                 </div>
               </div>
 
+              {/* Amortization table */}
               <div>
-                <p className="text-[10px] font-bold tracking-widest uppercase text-gray-400 mb-4">Estimated Monthly Amortization</p>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <p className="text-[10px] font-bold tracking-widest uppercase text-gray-400 mb-3">Monthly Amortization</p>
+                <div className="border-t border-gray-100">
                   {([12, 24, 36, 48] as const).map((mo) => {
                     const term = financing.terms.find((t) => t.months === mo);
                     return (
-                      <div key={mo} className="bg-white border border-gray-200 p-5 text-center">
-                        <p className="font-display text-4xl text-[#cc1111] leading-none">{mo}</p>
-                        <p className="text-[10px] font-bold tracking-widest uppercase text-gray-400 mt-1 mb-3">months</p>
-                        <p className="font-display text-xl text-gray-900 leading-none">{term ? formatPrice(term.monthlyAmortization) : "—"}</p>
-                        <p className="text-[10px] text-gray-400 mt-1">/ month</p>
+                      <div key={mo} className="flex justify-between items-center py-3 border-b border-gray-100">
+                        <span className="text-gray-500 text-sm">{mo} months</span>
+                        <span className="text-gray-900 font-semibold text-sm">{term ? formatPrice(term.monthlyAmortization) : "—"} / mo</span>
                       </div>
                     );
                   })}
                 </div>
               </div>
 
-              {financing.notes && (
-                <p className="text-gray-500 text-sm border-l-2 border-[#cc1111]/30 pl-4">{financing.notes}</p>
-              )}
-              <p className="text-gray-400 text-xs">* Figures are estimates only. Actual amounts may vary based on lender approval, credit standing, and prevailing interest rates.</p>
+              <p className="text-gray-400 text-xs">Estimates based on 20% down payment. Actual terms subject to lender approval.</p>
             </div>
           )}
 
