@@ -3,9 +3,18 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ShieldCheck, ClipboardList, BadgeCheck } from "lucide-react";
 
+const CAR_TYPE_PILLS = ["SUV", "Sedan", "Pickup", "Van", "Hatchback"];
+
 export default function HeroBanner() {
+  const router = useRouter();
+
+  function browseByType(type: string) {
+    router.push(`/cars?carType=${encodeURIComponent(type)}`);
+  }
+
   return (
     <section className="relative h-screen min-h-[680px] flex items-center overflow-hidden bg-white">
       {/* Subtle light grid */}
@@ -80,20 +89,42 @@ export default function HeroBanner() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.35 }}
-            className="flex flex-wrap gap-4 mb-14"
+            className="flex flex-wrap gap-4 mb-8"
           >
             <Link
-              href="#browse"
+              href="/cars"
               className="px-8 py-3.5 bg-[#cc1111] text-white text-xs font-bold tracking-widest uppercase hover:bg-[#aa0e0e] transition-colors"
             >
               Browse Cars →
             </Link>
             <Link
-              href="#inquire"
+              href="/contact"
               className="px-8 py-3.5 border border-gray-300 text-gray-600 text-xs font-bold tracking-widest uppercase hover:border-gray-800 hover:text-gray-900 transition-colors"
             >
               Get in Touch
             </Link>
+          </motion.div>
+
+          {/* Quick browse by type */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
+            <p className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-400 mb-3">
+              Browse by type
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {CAR_TYPE_PILLS.map((type) => (
+                <button
+                  key={type}
+                  onClick={() => browseByType(type)}
+                  className="px-4 py-2 border border-gray-200 bg-white text-[11px] font-bold tracking-widest uppercase text-gray-600 hover:border-[#cc1111] hover:text-[#cc1111] transition-colors"
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
           </motion.div>
 
         </div>

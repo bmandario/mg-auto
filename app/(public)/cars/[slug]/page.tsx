@@ -1,5 +1,6 @@
 import { getCarBySlug, getCars } from "@/lib/cars";
 import { notFound } from "next/navigation";
+import { Car } from "@/lib/types";
 import CarDetailClient from "./CarDetailClient";
 
 export const revalidate = 60;
@@ -38,5 +39,18 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
 
   if (!car) notFound();
 
-  return <CarDetailClient car={car} />;
+  let relatedCars: Car[] = [];
+  try {
+    const all = await getCars({ status: "published" });
+    relatedCars = all
+      .filter((c) => c.id !== car!.id && (c.brand === car!.brand || c.carType === car!.carType))
+      .slice(0, 4);
+    if (relatedCars.length < 2) {
+      relatedCars = all.filter((c) => c.id !== car!.id).slice(0, 4);
+    }
+  } catch {
+    relatedCars = [];
+  }
+
+  return <CarDetailClient car={car} relatedCars={relatedCars} />;
 }

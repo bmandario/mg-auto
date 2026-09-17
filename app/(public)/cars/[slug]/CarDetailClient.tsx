@@ -2,17 +2,20 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Car, DiagnosisStatus } from "@/lib/types";
 import { incrementViewCount } from "@/lib/cars";
 import { submitInquiry } from "@/lib/inquiries";
 import { motion } from "framer-motion";
 import {
   CheckCircle, XCircle, Clock, Gauge, Fuel, Settings2,
-  Users, Send, Banknote, AlertTriangle,
+  Users, Send, Banknote, AlertTriangle, Share2, ChevronLeft, Eye,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+
+const WHATSAPP_NUMBER = "639XXXXXXXXX"; // update with actual number
 
 const inquirySchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -83,16 +86,35 @@ function RoadworthyBadge({ status }: { status: string }) {
   );
 }
 
-export default function CarDetailClient({ car }: { car: Car }) {
+export default function CarDetailClient({ car, relatedCars = [] }: { car: Car; relatedCars?: Car[] }) {
   const [activePhoto, setActivePhoto] = useState(0);
   const [tab, setTab] = useState<"overview" | "service" | "parts" | "financing" | "diagnosis">("overview");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [showFloating, setShowFloating] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setShowFloating(window.scrollY > 500);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
 
   const { register, handleSubmit, formState: { errors } } = useForm<InquiryForm>({
     resolver: zodResolver(inquirySchema),
+    defaultValues: {
+      message: `Hi, I'm interested in the ${car.year} ${car.brand} ${car.model}. Please contact me with more details.`,
+    },
   });
 
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  const isSold = car.status === "sold";
   const financing = car.financing?.available ? car.financing : computeFinancing(car.sellingPrice);
   const mainPhoto = car.photos?.find((p) => p.isMain) || car.photos?.[0];
   const photos = car.photos || [];
@@ -180,6 +202,20 @@ export default function CarDetailClient({ car }: { car: Car }) {
                 </div>
               )}
             </div>
+            <div className="flex items-center gap-4 mt-4">
+              {!!car.viewCount && (
+                <span className="flex items-center gap-1.5 text-white/50 text-xs">
+                  <Eye size={13} /> {car.viewCount.toLocaleString()} views
+                </span>
+              )}
+              <button
+                onClick={copyLink}
+                className="flex items-center gap-1.5 text-white/60 hover:text-white text-xs transition-colors"
+              >
+                <Share2 size={13} />
+                {copied ? "Link copied!" : "Share"}
+              </button>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -204,6 +240,13 @@ export default function CarDetailClient({ car }: { car: Car }) {
           </div>
         </section>
       )}
+
+      {/* BACK LINK */}
+      <div className="bg-white border-b border-gray-100 px-4 sm:px-6 lg:px-8 py-3 max-w-7xl mx-auto">
+        <Link href="/cars" className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase text-gray-400 hover:text-[#cc1111] transition-colors">
+          <ChevronLeft size={12} /> Back to Listings
+        </Link>
+      </div>
 
       {/* KEY STATS */}
       <section className="bg-gray-50 border-b border-gray-200 py-8">
@@ -358,7 +401,6 @@ export default function CarDetailClient({ car }: { car: Car }) {
                         </div>
                         <p className="text-gray-900 font-semibold mb-1">{s.service}</p>
                         {s.notes && <p className="text-gray-600 text-sm">{s.notes}</p>}
-                        {s.cost > 0 && <p className="text-[#cc1111] text-sm font-bold mt-2">₱ {s.cost.toLocaleString("en-PH")}</p>}
                       </div>
                     </div>
                   ))}
@@ -558,7 +600,29 @@ export default function CarDetailClient({ car }: { car: Car }) {
           <h3 className="font-display text-5xl sm:text-6xl text-gray-900 uppercase tracking-tight mb-1">Ask About</h3>
           <h3 className="font-display text-5xl sm:text-6xl text-[#cc1111] uppercase tracking-tight mb-8">This Unit</h3>
 
-          {submitted ? (
+          {/* WhatsApp CTA */}
+          <a
+            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi, I'm interested in the ${car.year} ${car.brand} ${car.model}. Is it still available?`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-8 py-3 bg-[#25D366] text-white text-xs font-bold tracking-widest uppercase hover:bg-[#1ebe5c] transition-colors mb-6"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.553 4.12 1.52 5.855L.057 23.98l6.305-1.454A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.854 0-3.6-.5-5.1-1.373l-.365-.217-3.743.863.93-3.63-.239-.374A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+            Chat on WhatsApp
+          </a>
+
+          <p className="text-gray-400 text-xs mb-8 tracking-widest">— or fill out the form below —</p>
+
+          {isSold ? (
+            <div className="bg-gray-100 border border-gray-200 p-8">
+              <XCircle size={32} className="text-gray-400 mx-auto mb-3" />
+              <p className="text-gray-700 font-bold tracking-widest uppercase">This unit has been sold</p>
+              <p className="text-gray-500 text-sm mt-2 mb-5">Browse our other available units below.</p>
+              <Link href="/cars" className="inline-flex items-center gap-2 px-8 py-3 bg-[#cc1111] text-white text-xs font-bold tracking-widest uppercase hover:bg-[#aa0e0e] transition-colors">
+                Browse Available Cars
+              </Link>
+            </div>
+          ) : submitted ? (
             <div className="bg-emerald-50 border border-emerald-200 p-8">
               <CheckCircle size={32} className="text-emerald-600 mx-auto mb-3" />
               <p className="text-emerald-700 font-bold tracking-widest uppercase">Inquiry Sent!</p>
@@ -595,7 +659,6 @@ export default function CarDetailClient({ car }: { car: Car }) {
               <div>
                 <textarea
                   {...register("message")}
-                  placeholder="Your Message *"
                   rows={3}
                   className="w-full bg-transparent border-b border-gray-300 focus:border-[#cc1111] text-gray-900 placeholder-gray-400 py-3 text-sm outline-none transition-colors resize-none"
                 />
@@ -615,6 +678,81 @@ export default function CarDetailClient({ car }: { car: Car }) {
           )}
         </div>
       </section>
+
+      {/* RELATED CARS */}
+      {relatedCars.length > 0 && (
+        <section className="py-16 border-t border-gray-100 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-[#cc1111] mb-2">You May Also Like</p>
+            <h3 className="font-display text-3xl text-gray-900 uppercase mb-8">Similar Units</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {relatedCars.map((c) => {
+                const photo = c.photos?.find((p) => p.isMain) || c.photos?.[0];
+                return (
+                  <Link key={c.id} href={`/cars/${c.slug}`} className="group border border-gray-200 hover:border-[#cc1111]/40 hover:-translate-y-1 transition-all duration-200">
+                    <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+                      {photo ? (
+                        <Image src={photo.url} alt={`${c.brand} ${c.model}`} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="(max-width: 640px) 50vw, 25vw" />
+                      ) : (
+                        <div className="absolute inset-0 bg-gray-100" />
+                      )}
+                      {c.status === "sold" && (
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                          <span className="text-white font-black text-sm tracking-widest uppercase">SOLD</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-3">
+                      <p className="text-[9px] font-bold tracking-widest uppercase text-gray-400">{c.brand} · {c.year}</p>
+                      <p className="text-gray-900 font-bold text-sm leading-tight mt-0.5">{c.model}</p>
+                      <p className="text-[#cc1111] font-bold text-sm mt-1">{formatPrice(c.sellingPrice)}</p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* FLOATING RESERVE BUTTON */}
+      {!isSold && (
+        <a
+          href="#inquire"
+          className={`fixed right-6 bottom-8 z-50 flex items-center gap-2 px-6 py-4 bg-[#cc1111] text-white text-[10px] font-bold tracking-widest uppercase hover:bg-[#aa0e0e] transition-all duration-300 shadow-lg shadow-[#cc1111]/30 ${showFloating ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"}`}
+        >
+          <Send size={13} />
+          Reserve This Unit
+        </a>
+      )}
+
+      {/* STICKY MOBILE CTA */}
+      {!isSold && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-white border-t border-gray-200 px-4 py-3 flex items-center justify-between gap-3">
+          <div>
+            <p className="text-[9px] font-bold tracking-widest uppercase text-gray-400">Selling Price</p>
+            <p className="font-display text-xl text-[#cc1111] leading-none">{formatPrice(car.sellingPrice)}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <a
+              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi, I'm interested in the ${car.year} ${car.brand} ${car.model}. Is it still available?`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-4 py-2.5 bg-[#25D366] text-white text-[10px] font-bold tracking-widest uppercase"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.553 4.12 1.52 5.855L.057 23.98l6.305-1.454A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.854 0-3.6-.5-5.1-1.373l-.365-.217-3.743.863.93-3.63-.239-.374A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+              WhatsApp
+            </a>
+            <a
+              href="#inquire"
+              className="flex items-center gap-1.5 px-4 py-2.5 bg-[#cc1111] text-white text-[10px] font-bold tracking-widest uppercase"
+            >
+              <Send size={12} /> Inquire
+            </a>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

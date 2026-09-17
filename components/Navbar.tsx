@@ -3,13 +3,12 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Search } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 const links = [
-  { label: "Available Units", href: "/#browse" },
-  { label: "Sold Units", href: "/cars/sold" },
+  { label: "Available Units", href: "/cars" },
   { label: "About", href: "/about" },
-  { label: "Contact Us", href: "#inquire" },
+  { label: "Contact Us", href: "/contact" },
 ];
 
 export default function Navbar() {
@@ -58,13 +57,10 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Right: search + CTA */}
+          {/* Right: CTA */}
           <div className="hidden md:flex items-center gap-4">
-            <button className="text-gray-400 hover:text-gray-700 transition-colors">
-              <Search size={16} />
-            </button>
             <Link
-              href="/#browse"
+              href="/cars"
               className="px-5 py-2 bg-[#cc1111] text-white text-[10px] font-bold tracking-widest uppercase hover:bg-[#aa0e0e] transition-colors"
             >
               Browse Cars
@@ -95,7 +91,7 @@ export default function Navbar() {
             ))}
             <div className="px-4 pt-3">
               <Link
-                href="/#browse"
+                href="/cars"
                 onClick={() => setOpen(false)}
                 className="block text-center px-5 py-2.5 bg-[#cc1111] text-white text-[10px] font-bold tracking-widest uppercase"
               >
