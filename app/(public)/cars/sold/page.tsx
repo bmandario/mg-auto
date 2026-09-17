@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getCars } from "@/lib/cars";
 import CarGrid from "@/components/CarGrid";
 import { Car } from "@/lib/types";
@@ -36,7 +37,9 @@ export default async function SoldCarsPage() {
             <p className="text-[#444] text-lg">No sold cars yet.</p>
           </div>
         ) : (
-          <CarGrid cars={cars} />
+            <Suspense fallback={<div className="py-20 text-center text-gray-400 text-sm">Loading...</div>}>
+            <CarGrid cars={cars} />
+          </Suspense>
         )}
       </section>
     </div>
